@@ -149,7 +149,7 @@ public class Visualization : MonoBehaviour, Grabbable, Brushable
     }
 
     void Start()
-    {   
+    {
         //add the tag
         tag = "Visualisation";
         string myName = "";
@@ -166,7 +166,7 @@ public class Visualization : MonoBehaviour, Grabbable, Brushable
         EventManager.StartListening(ApplicationConfiguration.OnColoredAttributeChanged, OnAttributeChanged);
         EventManager.StartListening(ApplicationConfiguration.OnLinkedAttributeChanged, OnAttributeChanged);
         EventManager.StartListening(ApplicationConfiguration.OnScatterplotAttributeChanged, OnAttributeChanged);
-        
+
         //ignore raycasts for brushing/details on demand
         GetComponent<SphereCollider>().gameObject.layer = 2;
     }
@@ -176,7 +176,7 @@ public class Visualization : MonoBehaviour, Grabbable, Brushable
         EventManager.StopListening(ApplicationConfiguration.OnSlideChangePointSize, OnChangePointSize);
         EventManager.StopListening(ApplicationConfiguration.OnColoredAttributeChanged, OnAttributeChanged);
         EventManager.StopListening(ApplicationConfiguration.OnLinkedAttributeChanged, OnAttributeChanged);
-        EventManager.StopListening(ApplicationConfiguration.OnScatterplotAttributeChanged, OnAttributeChanged);    
+        EventManager.StopListening(ApplicationConfiguration.OnScatterplotAttributeChanged, OnAttributeChanged);
 
         foreach (Axis axis in axes)
         {
@@ -264,7 +264,18 @@ public class Visualization : MonoBehaviour, Grabbable, Brushable
 
     public void ShowHistogram(bool hide)
     {
-        histogramObject.SetActive(hide);
+        try
+        {
+            histogramObject.SetActive(hide);
+        }
+        catch (MissingReferenceException)
+        {
+            Debug.Log("ERROR : unable to hide histogram");
+        }
+        finally
+        {
+            Debug.Log("Pass");
+        }
     }
 
     public void AddAxis(Axis axis)
@@ -379,7 +390,7 @@ public class Visualization : MonoBehaviour, Grabbable, Brushable
             parallelT.Item1.layer = LayerMask.NameToLayer("View");
             parallelT.Item1.tag = "View";
             parallelT.Item1.name += " parallel";
-            parallelT.Item2.setColors(VisualisationAttributes.Instance.colors, true);            
+            parallelT.Item2.setColors(VisualisationAttributes.Instance.colors, true);
             DetailsOnDemandComponent = parallelT.Item1.AddComponent<DetailsOnDemand>();
             DetailsOnDemandComponent.VisualizationReference = this;
             parallelT.Item1.GetComponentInChildren<DetailsOnDemand>().setTransformParent(transform);
@@ -1360,7 +1371,18 @@ public class Visualization : MonoBehaviour, Grabbable, Brushable
     public void OnDetailOnDemandRelease(WandController controller)
     {
         isDetailOnDemand = false;
-        DetailsOnDemandComponent.OnDetailOnDemandEnd();
+        try
+        {
+            DetailsOnDemandComponent.OnDetailOnDemandEnd();
+        }
+        catch (NullReferenceException)
+        {
+            Debug.Log("ERROR : unable to get detail on Demand");
+        }
+        finally
+        {
+            Debug.Log("Pass");
+        }
     }
 
     string[] memory = new string[5];

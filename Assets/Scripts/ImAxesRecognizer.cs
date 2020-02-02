@@ -15,7 +15,7 @@ public class ImAxesRecognizer : MonoBehaviour
     public float ADJACENCY_DISTANCE = 0.25f;
 
     int stopTest = 0;
-    
+
     //New Staxes Scene Parsing 
 
     List<Axis> A = new List<Axis>();
@@ -30,6 +30,7 @@ public class ImAxesRecognizer : MonoBehaviour
     public float SP_DISTANCE_SQR = 0.05f * 0.05f;
     public float PCP_DISTANCE = 0.00001f;
     public float SP_MIDPOINT_DISTANCE = 0.25f;
+
 
     void Start()
     {
@@ -56,14 +57,14 @@ public class ImAxesRecognizer : MonoBehaviour
     bool RSP1(Axis a, Axis b, Axis c)
     {
         return
-            
+
            a.isPerependicular(b)
            && a.isPerependicular(c)
            && b.isPerependicular(c)
            &&
-            ((Vector3.Distance(b.MinPosition, a.MinPosition) < SP_DISTANCE && (Vector3.Distance(b.MinPosition, c.MinPosition) < SP_DISTANCE))         
+            ((Vector3.Distance(b.MinPosition, a.MinPosition) < SP_DISTANCE && (Vector3.Distance(b.MinPosition, c.MinPosition) < SP_DISTANCE))
             || ((Vector3.Distance(b.MinPosition, a.MinPosition) < SP_DISTANCE && (Vector3.Distance(b.MinPosition, c.MaxPosition) < SP_DISTANCE)))
-            || ((Vector3.Distance(b.MaxPosition, a.MinPosition) < SP_DISTANCE && (Vector3.Distance(b.MaxPosition, c.MaxPosition) < SP_DISTANCE)))           
+            || ((Vector3.Distance(b.MaxPosition, a.MinPosition) < SP_DISTANCE && (Vector3.Distance(b.MaxPosition, c.MaxPosition) < SP_DISTANCE)))
             || ((Vector3.Distance(b.MaxPosition, a.MinPosition) < SP_DISTANCE && (Vector3.Distance(b.MaxPosition, c.MinPosition) < SP_DISTANCE)))
             || ((Vector3.Distance(b.MinPosition, a.MaxPosition) < SP_DISTANCE && (Vector3.Distance(b.MinPosition, c.MinPosition) < SP_DISTANCE)))
             || ((Vector3.Distance(b.MinPosition, a.MaxPosition) < SP_DISTANCE && (Vector3.Distance(b.MinPosition, c.MaxPosition) < SP_DISTANCE)))
@@ -143,8 +144,8 @@ public class ImAxesRecognizer : MonoBehaviour
 
         foreach (var axis in A)
         {
-            if(axis!=null)
-            axis.UpdateCoords();
+            if (axis != null)
+                axis.UpdateCoords();
         }
 
         // Pass 0: Producing SPs
@@ -174,22 +175,55 @@ public class ImAxesRecognizer : MonoBehaviour
 
                         if (SP.Any(x => x.axes.Count == 1 && x.axes.Contains(A[i])))
                         {
-                            var toRemove = SP.Single(x => x.axes.Count == 1 && x.axes.Contains(A[i]));
-                            Destroy(SP.Find(x => x.axes.Count == 1 && x.axes.Contains(A[i])).gameObject);
-                            SP.Remove(toRemove);
+                            try
+                            {
+                                var toRemove = SP.Single(x => x.axes.Count == 1 && x.axes.Contains(A[i]));
+                                Destroy(SP.Find(x => x.axes.Count == 1 && x.axes.Contains(A[i])).gameObject);
+                                SP.Remove(toRemove);
+                            }
+                            catch (MissingReferenceException)
+                            {
+                                //Debug.Log("ERROR: unable to remove SP");
+                            }
+                            finally
+                            {
+                                //Debug.Log("pass");
+                            }
                         }
                         if (SP.Any(x => x.axes.Count == 1 && x.axes.Contains(A[j])))
                         {
-                            var toRemove = SP.Single(x => x.axes.Count == 1 && x.axes.Contains(A[j]));
-                            Destroy(SP.Find(x => x.axes.Count == 1 && x.axes.Contains(A[j])).gameObject);
-                            SP.Remove(toRemove);
+                            try
+                            {
+                                var toRemove = SP.Single(x => x.axes.Count == 1 && x.axes.Contains(A[j]));
+                                Destroy(SP.Find(x => x.axes.Count == 1 && x.axes.Contains(A[j])).gameObject);
+                                SP.Remove(toRemove);
+                            }
+                            catch (MissingReferenceException)
+                            {
+                                //Debug.Log("ERROR: unable to remove SP");
+                            }
+                            finally
+                            {
+                                //Debug.Log("pass");
+                            }
 
                         }
                         if (SP.Any(x => x.axes.Count == 1 && x.axes.Contains(A[k])))
                         {
-                            var toRemove = SP.Single(x => x.axes.Count == 1 && x.axes.Contains(A[k]));
-                            Destroy(SP.Find(x => x.axes.Count == 1 && x.axes.Contains(A[k])).gameObject);
-                            SP.Remove(toRemove);
+                            try
+                            {
+                                var toRemove = SP.Single(x => x.axes.Count == 1 && x.axes.Contains(A[k]));
+                                Destroy(SP.Find(x => x.axes.Count == 1 && x.axes.Contains(A[k])).gameObject);
+                                SP.Remove(toRemove);
+                            }
+                            catch (MissingReferenceException)
+                            {
+                                //Debug.Log("ERROR: unable to remove SP");
+                            }
+                            finally
+                            {
+                                //Debug.Log("pass");
+                            }
                         }
 
                         //add it to 3D SPLOM LIST
@@ -218,7 +252,7 @@ public class ImAxesRecognizer : MonoBehaviour
                             SPLOM3D sp = this.SPLOMS3D.Find(x => x.BaseVisualization == v);
                             if (sp != null)
                             {
-                                this.SPLOMS3D.Remove(sp);                                
+                                this.SPLOMS3D.Remove(sp);
                                 //sp.showAllHistogramsOnClear();
                                 sp.ClearSplom(ref SP);
                                 Destroy(sp.gameObject);
@@ -261,15 +295,37 @@ public class ImAxesRecognizer : MonoBehaviour
 
                     if (SP.Any(x => x.axes.Count == 1 && x.axes.Contains(A[i])))
                     {
-                        var toRemove = SP.Single(x => x.axes.Count == 1 && x.axes.Contains(A[i]));
-                        Destroy(SP.Find(x => x.axes.Count == 1 && x.axes.Contains(A[i])).gameObject);
-                        SP.Remove(toRemove);
+                        try
+                        {
+                            var toRemove = SP.Single(x => x.axes.Count == 1 && x.axes.Contains(A[i]));
+                            Destroy(SP.Find(x => x.axes.Count == 1 && x.axes.Contains(A[i])).gameObject);
+                            SP.Remove(toRemove);
+                        }
+                        catch
+                        {
+                            //Debug.Log("ERROR: unable tom remove SP");
+                        }
+                        finally
+                        {
+                            //Debug.Log("Pass");
+                        }
                     }
                     if (SP.Any(x => x.axes.Count == 1 && x.axes.Contains(A[j])))
                     {
-                        var toRemove = SP.Single(x => x.axes.Count == 1 && x.axes.Contains(A[j]));
-                        Destroy(SP.Find(x => x.axes.Count == 1 && x.axes.Contains(A[j])).gameObject);
-                        SP.Remove(toRemove);
+                        try
+                        {
+                            var toRemove = SP.Single(x => x.axes.Count == 1 && x.axes.Contains(A[j]));
+                            Destroy(SP.Find(x => x.axes.Count == 1 && x.axes.Contains(A[j])).gameObject);
+                            SP.Remove(toRemove);
+                        }
+                        catch
+                        {
+                            //Debug.Log("EROOR: unable to remove SP");
+                        }
+                        finally
+                        {
+                            //Debug.Log("Pass");
+                        }
                     }
 
                     adjacency[i, j, i] = vis;
@@ -288,14 +344,14 @@ public class ImAxesRecognizer : MonoBehaviour
                 else if (usedAxisIn3DSP.Contains(A[i]) &&
                     usedAxisIn3DSP.Contains(A[j]) && adjacency[i, j, i] != null)
                 {
-                    
+
                     //destroy the visualisation
                     Visualization v = adjacency[i, j, i];
                     adjacency[i, j, i] = null;
 
                     if (v != null)
                     {
-                       // >>>>>>>>>>> HERE WHEN A 2D SP BECOMES A 3D SP <<<<<<<<<<<<
+                        // >>>>>>>>>>> HERE WHEN A 2D SP BECOMES A 3D SP <<<<<<<<<<<<
                         //Clean the memory lists                       
                         SPLOM3D sp = SPLOMS3D.Find(x => x.BaseVisualization == v);
                         if (sp != null)
@@ -331,7 +387,7 @@ public class ImAxesRecognizer : MonoBehaviour
                         sp.ClearSplom(ref SP);
                         Destroy(sp.gameObject);
                     }
-                   
+
                     adjacency[i, j, i] = null;
 
                     if (v != null)
@@ -392,7 +448,7 @@ public class ImAxesRecognizer : MonoBehaviour
                 newSplom.initialiseBaseScatterplot(SP[i], x3D, y3D, z3D);
                 newSplom.VisualizationPrefab = visualizationPrefab;
                 SPLOMS3D.Add(newSplom);
-                
+
             }
 
         }
@@ -403,30 +459,30 @@ public class ImAxesRecognizer : MonoBehaviour
             SPLOM3D splom3D = SPLOMS3D[sp3d];
 
             Axis x3D = null;
-            if (splom3D.XAxes1.Count>0)
-            x3D = splom3D.XAxes1.Last(); // get the last X axis
+            if (splom3D.XAxes1.Count > 0)
+                x3D = splom3D.XAxes1.Last(); // get the last X axis
             Axis y3D = null;
-            if(splom3D.YAxes1.Count>0)
-            y3D = splom3D.YAxes1.Last(); // get the last Y axis
+            if (splom3D.YAxes1.Count > 0)
+                y3D = splom3D.YAxes1.Last(); // get the last Y axis
 
             Axis z3D = null;
-            if (splom3D.ZAxes1.Count>0)
-            z3D = splom3D.ZAxes1.Last(); // get the last Z axis
+            if (splom3D.ZAxes1.Count > 0)
+                z3D = splom3D.ZAxes1.Last(); // get the last Z axis
 
             //look for a new axis
             Axis newXAxis = null;
             Axis newYAxis = null;
             Axis newZAxis = null;
-            
+
             foreach (var axis in A)
             {
-                if (x3D!=null && Vector3.Distance(x3D.MaxPosition, axis.MinPosition) < SP_DISTANCE / 4f && x3D.IsColinear(axis)
+                if (x3D != null && Vector3.Distance(x3D.MaxPosition, axis.MinPosition) < SP_DISTANCE / 4f && x3D.IsColinear(axis)
                     && !splom3D.XAxes1.Contains(axis))
                     newXAxis = axis;
                 else if (y3D != null && Vector3.Distance(y3D.MaxPosition, axis.MinPosition) < SP_DISTANCE / 4f && y3D.IsColinear(axis)
                     && !splom3D.YAxes1.Contains(axis))
                     newYAxis = axis;
-                else if (z3D!=null && Vector3.Distance(z3D.MaxPosition, axis.MinPosition) < SP_DISTANCE / 4f && z3D.IsColinear(axis)
+                else if (z3D != null && Vector3.Distance(z3D.MaxPosition, axis.MinPosition) < SP_DISTANCE / 4f && z3D.IsColinear(axis)
                     && !splom3D.ZAxes1.Contains(axis))
                     newZAxis = axis;
             }
@@ -491,7 +547,7 @@ public class ImAxesRecognizer : MonoBehaviour
 
                 for (int i = indexX; i < splom3D.XAxes1.Count; i++)
                 {
-                    foreach (var sp1 in SP.Where(x=>x.axes.Count==1))
+                    foreach (var sp1 in SP.Where(x => x.axes.Count == 1))
                     {
                         if (sp1.axes[0] == splom3D.XAxes1[i])
                             sp1.ShowHistogram(true);
@@ -543,42 +599,88 @@ public class ImAxesRecognizer : MonoBehaviour
                     //test the distance between 2 axes if linking 2 histograms
                     if (SP[i].viewType == Visualization.ViewType.Histogram && SP[j].viewType == Visualization.ViewType.Histogram)
                     {
-                        if (SP[i].transform.position != SP[j].transform.position
-                            && Vector3.Distance(SP[i].axes[0].transform.position, SP[j].axes[0].transform.position) < PCP_DISTANCE
-                            && !linkedVisualisationDictionary.ContainsKey(_name) && !linkedVisualisationDictionary.ContainsKey(_nameReverse))
+                        try
                         {
-                            SP[i].ShowHistogram(false);
-                            SP[j].ShowHistogram(false);
+                            if (SP[i].transform.position != SP[j].transform.position
+                                && Vector3.Distance(SP[i].axes[0].transform.position, SP[j].axes[0].transform.position) < PCP_DISTANCE
+                                && !linkedVisualisationDictionary.ContainsKey(_name) && !linkedVisualisationDictionary.ContainsKey(_nameReverse))
+                            {
+                                SP[i].ShowHistogram(false);
+                                SP[j].ShowHistogram(false);
 
-                            LinkVisualisations(_name, SP[i], SP[j]);
+                                LinkVisualisations(_name, SP[i], SP[j]);
+                            }
                         }
-                     
+                        catch (MissingReferenceException)
+                        {
+                            //Debug.Log("ERROR : MissingReferenceException");
+                        }
+                        finally
+                        {
+                            //Debug.Log("pass");
+                        }
+
+
                     }
                     else if (SP[i].viewType == Visualization.ViewType.Histogram && SP[j].viewType != Visualization.ViewType.Histogram)
                     {
-                         
-                        if (SP[i].axes[0].transform.position != SP[j].transform.position
-                            && Vector3.Distance(SP[i].axes[0].transform.position, SP[j].transform.position) < PCP_DISTANCE
-                            && !linkedVisualisationDictionary.ContainsKey(_name) && !linkedVisualisationDictionary.ContainsKey(_nameReverse))
-                       //     && !SP[j].IsSPLOMElement)
+                        try
                         {
-                            if (SP[i].viewType == Visualization.ViewType.Histogram) SP[i].ShowHistogram(false);
-                            if (SP[j].viewType == Visualization.ViewType.Histogram) SP[j].ShowHistogram(false);
+                            if (SP[i].axes[0].transform.position != SP[j].transform.position
+                                && Vector3.Distance(SP[i].axes[0].transform.position, SP[j].transform.position) < PCP_DISTANCE
+                                && !linkedVisualisationDictionary.ContainsKey(_name) && !linkedVisualisationDictionary.ContainsKey(_nameReverse))
+                            //     && !SP[j].IsSPLOMElement)
+                            {
+                                try
+                                {
+                                    if (SP[i].viewType == Visualization.ViewType.Histogram) SP[i].ShowHistogram(false);
+                                    if (SP[j].viewType == Visualization.ViewType.Histogram) SP[j].ShowHistogram(false);
 
-                            LinkVisualisations(_name, SP[i], SP[j]);
+                                    LinkVisualisations(_name, SP[i], SP[j]);
+                                }
+                                catch (MissingReferenceException)
+                                {
+                                    //Debug.Log("ERROR : Unable to to run ShowHistrogram(false)");
+                                }
+                                finally
+                                {
+                                    //Debug.Log("pass");
+                                }
+                            }
                         }
+                        catch (MissingReferenceException)
+                        {
+                            //Debug.Log("ERROR : MissingReferenceException");
+                        }
+                        finally
+                        {
+                            //Debug.Log("pass");
+                        }
+
                     }
                     else
                     {
-                        if (SP[i].transform.position != SP[j].transform.position
+                        try
+                        {
+                            if (SP[i].transform.position != SP[j].transform.position
                             && Vector3.Distance(SP[i].transform.position, SP[j].transform.position) < PCP_DISTANCE
                             && !linkedVisualisationDictionary.ContainsKey(_name) && !linkedVisualisationDictionary.ContainsKey(_nameReverse))
-                        {
-                            if (SP[i].viewType == Visualization.ViewType.Histogram) SP[i].ShowHistogram(false);
-                            if (SP[j].viewType == Visualization.ViewType.Histogram) SP[j].ShowHistogram(false);
+                            {
+                                if (SP[i].viewType == Visualization.ViewType.Histogram) SP[i].ShowHistogram(false);
+                                if (SP[j].viewType == Visualization.ViewType.Histogram) SP[j].ShowHistogram(false);
 
-                            LinkVisualisations(_name, SP[i], SP[j]);
+                                LinkVisualisations(_name, SP[i], SP[j]);
+                            }
                         }
+                        catch (MissingReferenceException)
+                        {
+                            //Debug.Log("ERROR : MissingReferenceException");
+                        }
+                        finally
+                        {
+                            //Debug.Log("pass");
+                        }
+
                     }
                 }
             }
@@ -645,7 +747,7 @@ public class ImAxesRecognizer : MonoBehaviour
         string grammarSymbols = "SP1: " + SP.Count(x => x.viewType == Visualization.ViewType.Histogram) + "\n"
                                 + "SP2: " + SP.Count(x => x.viewType == Visualization.ViewType.Scatterplot2D) + "\n"
                                 + "SP3: " + SP.Count(x => x.viewType == Visualization.ViewType.Scatterplot3D) + "\n"
-//                                + "SP2_SPLOM: " + SPLOMS2D.Count + "\n"
+                                //                                + "SP2_SPLOM: " + SPLOMS2D.Count + "\n"
                                 + "SP3_SPLOM: " + SPLOMS3D.Count + "\n";
     }
 
@@ -745,5 +847,5 @@ public class ImAxesRecognizer : MonoBehaviour
             }
         }
     }
-    
+
 }
