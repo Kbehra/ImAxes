@@ -10,6 +10,8 @@ namespace RadialMenu
     public class onClick : UnityEvent<int> { }
 
 
+
+
     [RequireComponent(typeof(Animator))]                                    //requierement to handle the radialMenu 
     [RequireComponent(typeof(CanvasGroup))]                                 //fade out the RadialMenu
 
@@ -75,7 +77,7 @@ namespace RadialMenu
         // Update is called once per frame
         void Update()
         {
-            OVRInput.Update();
+            //OVRInput.Update();
 
             float istouch = OVRInput.Get(OVRInput.RawAxis1D.LHandTrigger); 
             
@@ -94,7 +96,7 @@ namespace RadialMenu
             HandleMenuActivation();
             UpdateMenu();
 
-            OVRInput.FixedUpdate();
+            //OVRInput.FixedUpdate();
 
         }
           
@@ -154,6 +156,34 @@ namespace RadialMenu
                     menuAngle += 360;
                 }
                 int updateMenuID = (int)(menuAngle / (360.0 / 8.0));
+
+                switch (updateMenuID)
+                {
+                    case 0:
+                        // mean
+                        break;
+                    case 1:
+                        // histogram
+                        break;
+                    case 2:
+                        // export to HTML
+                        break;
+                    case 3:
+                        // parameters
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        // screenshot
+                        break;
+                    case 6:
+                        // standard deviation
+                        break;
+                    case 7:
+                        // percentage
+                        break;
+
+                }
                 HandleDebugText(updateMenuID.ToString());
 
                 //Update current Id
