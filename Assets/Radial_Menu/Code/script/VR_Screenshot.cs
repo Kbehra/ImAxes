@@ -32,7 +32,7 @@ namespace RadialMenu
 
         void LateUpdate()
         {
-            takeHiResShot |= Input.GetKeyDown("k");
+            takeHiResShot |= (OVRInput.Get(OVRInput.RawAxis1D.RIndexTrigger) !=0);
             if (takeHiResShot)
             {
                 RenderTexture rt = new RenderTexture(resWidth, resHeight, 24);
@@ -49,6 +49,7 @@ namespace RadialMenu
                 System.IO.File.WriteAllBytes(filename, bytes);
                 Debug.Log(string.Format("Took screenshot to: {0}", filename));
                 takeHiResShot = false;
+                Destroy(GameObject.Find("UI_ScreenShot"));
             }
         }
    

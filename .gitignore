@@ -69,3 +69,9 @@ sysinfo.txt
 ehthumbs.db
 [Tt]humbs.db
 [Dd]esktop.ini
+
+# ============ #
+# P2RV		   #
+# ============ #
+/Assets/screenshots/*.png
+/Assets/screenshots/*.meta

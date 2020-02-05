@@ -63,9 +63,13 @@ namespace RadialMenu
         }
         public void Click(int anID)
         {
-            if (OnClick != null)
+            if (buttonID == anID)
             {
-                OnClick.Invoke();
+                if (OnClick != null)
+                {
+                    OnClick.Invoke();
+                   
+                }
             }
         }
        void HandleAnimator(bool aToggle)

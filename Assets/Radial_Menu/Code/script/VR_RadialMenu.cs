@@ -34,14 +34,17 @@ namespace RadialMenu
         private bool menuOpen = false;
         private bool allowNavigation = false;
         private bool isTouching = false;
+        public bool isClick = false;
         private float currentAngle;                                         // wich menu is currently on 
 
         private int currentMenuID = -1;
         private int previousMenuID = -1;
 
         private onHover OnHover = new onHover();
-        private onClick OnClick = new onClick(); 
-       
+        private onClick OnClick = new onClick();
+
+        //private VR_Screenshot screenshot = new VR_Screenshot();
+
         #endregion
 
         #region Main Methods
@@ -78,9 +81,22 @@ namespace RadialMenu
         void Update()
         {
             //OVRInput.Update();
+            //OVRInput.FixedUpdate();
 
-            float istouch = OVRInput.Get(OVRInput.RawAxis1D.LHandTrigger); 
+            float istouch = OVRInput.Get(OVRInput.RawAxis1D.LHandTrigger);
+            float isClicked = OVRInput.Get(OVRInput.RawAxis1D.LIndexTrigger);
             
+
+            if (isClicked == 0)
+            {
+                isClick = false; 
+            }
+            else
+            {
+                isClick = true; 
+            }
+
+
             if (istouch == 0)
             {
                 isTouching = false; 
@@ -90,13 +106,8 @@ namespace RadialMenu
                 isTouching = true; 
             }
 
- 
-          
-
             HandleMenuActivation();
             UpdateMenu();
-
-            //OVRInput.FixedUpdate();
 
         }
           
@@ -149,7 +160,6 @@ namespace RadialMenu
                 currentAxis = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick); 
                 currentAngle = Vector2.SignedAngle(Vector2.up, currentAxis);
 
-                //HandleDebugText(currentAngle.ToString()); 
                 float menuAngle = currentAngle; 
                 if(menuAngle < 0)
                 {
@@ -157,34 +167,44 @@ namespace RadialMenu
                 }
                 int updateMenuID = (int)(menuAngle / (360.0 / 8.0));
 
-                switch (updateMenuID)
+                if (isClick == true)
                 {
-                    case 0:
-                        // mean
-                        break;
-                    case 1:
-                        // histogram
-                        break;
-                    case 2:
-                        // export to HTML
-                        break;
-                    case 3:
-                        // parameters
-                        break;
-                    case 4:
-                        break;
-                    case 5:
-                        // screenshot
-                        break;
-                    case 6:
-                        // standard deviation
-                        break;
-                    case 7:
-                        // percentage
-                        break;
-
+                    switch (updateMenuID)
+                    {
+                        case 0:
+                            // mean
+                            break;
+                        case 1:
+                            // histogram
+                            break;
+                        case 2:
+                            // export to HTML
+                            break;
+                        case 3:
+                            // parameters
+                            break;
+                        case 4:
+                            break;
+                        case 5:
+                            // screenshot
+                            HandleDebugText("SCRENN");
+                            GameObject screenshot = GameObject.Find("Asssets/Radial_Menu/Prefabs/UI_ScreenShot");
+     
+                            break;
+                        case 6:
+                            // standard deviation
+                            break;
+                        case 7:
+                            // percentage
+                            break;
+                    }
+              
                 }
-                HandleDebugText(updateMenuID.ToString());
+                else
+                {
+                    HandleDebugText(updateMenuID.ToString());
+                }
+
 
                 //Update current Id
                 if(updateMenuID != currentMenuID)
