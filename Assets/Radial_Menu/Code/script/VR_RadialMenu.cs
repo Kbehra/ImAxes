@@ -40,6 +40,8 @@ namespace RadialMenu
         private int currentMenuID = -1;
         private int previousMenuID = -1;
 
+        public GameObject screenshot; 
+
         private onHover OnHover = new onHover();
         private onClick OnClick = new onClick();
 
@@ -187,9 +189,20 @@ namespace RadialMenu
                             break;
                         case 5:
                             // screenshot
-                            HandleDebugText("SCRENN");
-                            GameObject screenshot = GameObject.Find("Asssets/Radial_Menu/Prefabs/UI_ScreenShot");
-     
+                                         
+                            // to prevent issue when the user press the controller too long   
+                            if (GameObject.Find("UI_ScreenShot") == false && GameObject.Find("UI_ScreenShot(Clone)") == false)
+                            {
+                                GameObject UI_ScreenShot = Instantiate(Resources.Load("UI_ScreenShot", typeof(GameObject))) as GameObject;
+                                UI_ScreenShot.SetActive(true);
+
+                                GameObject rightcontroller = GameObject.Find("Controller (right)");
+                               
+                                // give the transform of the right controller to the Screenshot UI
+                                UI_ScreenShot.transform.parent = rightcontroller.transform;
+                                UI_ScreenShot.transform.position = rightcontroller.transform.position;
+                                UI_ScreenShot.transform.rotation = rightcontroller.transform.rotation;
+                            }
                             break;
                         case 6:
                             // standard deviation

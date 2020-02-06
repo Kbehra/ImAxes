@@ -49,7 +49,7 @@ namespace RadialMenu
                 System.IO.File.WriteAllBytes(filename, bytes);
                 Debug.Log(string.Format("Took screenshot to: {0}", filename));
                 takeHiResShot = false;
-                Destroy(GameObject.Find("UI_ScreenShot"));
+                Destroy(gameObject);
             }
         }
    
