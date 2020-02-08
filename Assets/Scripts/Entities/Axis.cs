@@ -70,14 +70,23 @@ public class Axis : MonoBehaviour, Grabbable {
     // ghost properties
     Axis ghostSourceAxis = null;
 
+    //test data ----
+    float[,] dataArraytest;
+    public float[,] DataArraytest
+    {
+        get { return dataArraytest; }
+        set { dataArraytest = value; }
+    }
+    //fin test ----
 
     public void Init(DataBinding.DataObject srcData, int idx, bool isPrototype = false)
     {
         SourceIndex = idx;
         axisId = idx;
         name = "axis " + srcData.indexToDimension(idx);
-
-
+        //test--
+        dataArraytest = srcData.DataArray;
+        //---
         AttributeRange = srcData.DimensionsRange[axisId];
         label.text = srcData.Identifiers[idx];
         UpdateRangeText();

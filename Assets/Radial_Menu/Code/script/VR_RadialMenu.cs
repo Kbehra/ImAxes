@@ -46,7 +46,7 @@ namespace RadialMenu
         private onClick OnClick = new onClick();
 
         //private VR_Screenshot screenshot = new VR_Screenshot();
-
+        private List<GameObject> listAxis = new List<GameObject>();
         #endregion
 
         #region Main Methods
@@ -175,6 +175,16 @@ namespace RadialMenu
                     {
                         case 0:
                             // mean
+                            WandController controller = (GameObject.FindWithTag("Controller")).GetComponent<WandController>() ;
+                            //listAxis = controller.draggingObjects; //mettre la liste des axes attachés aux controlleurs
+                            if (controller.IsDragging() == true)
+                            {   //faire un for pour prendre en compte tout les axes attachés aux controlleurs
+                                //valeur moyenne des valeurs contenues dans chaques axes
+                                //System.Nullable<Decimal> averageValues = (from  in ).Average();
+
+                                //Console.WriteLine(averageValues);
+
+                            }
                             break;
                         case 1:
                             // histogram
