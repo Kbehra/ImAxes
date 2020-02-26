@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Events; 
+using UnityEngine.Events;
+using System.Linq;
 
 namespace RadialMenu
 {
@@ -175,14 +176,45 @@ namespace RadialMenu
                     {
                         case 0:
                             // mean
-                            WandController controller = (GameObject.FindWithTag("Controller")).GetComponent<WandController>() ;
-                            //listAxis = controller.draggingObjects; //mettre la liste des axes attachés aux controlleurs
-                            if (controller.IsDragging() == true)
-                            {   //faire un for pour prendre en compte tout les axes attachés aux controlleurs
-                                //valeur moyenne des valeurs contenues dans chaques axes
-                                //System.Nullable<Decimal> averageValues = (from  in ).Average();
+                            float[,] data;
+                            GameObject controller1 = GameObject.Find("Controller (right)");
+                            GameObject controller2 = GameObject.Find("Controller (left)");
 
-                                //Console.WriteLine(averageValues);
+                            foreach (Transform child in controller1.transform)  // liste des axes attachés au controlleur droit
+                            {
+                                 if (child.tag == "Axis")
+                                 {
+                                     listAxis.Add(child.gameObject);
+                                 }
+                            }
+                            foreach (Transform child in controller2.transform)  // liste des axes attachés au controlleur gauche
+                            {
+                                if (child.tag == "Axis")
+                                {
+                                    listAxis.Add(child.gameObject);
+                                }
+                            }
+
+                            if (listAxis != null)
+                            {   
+                                //faire un for pour prendre en compte tout les axes attachés aux controlleurs
+                                foreach(GameObject axis in listAxis)  // pour tout les axes sélectionnés
+                                {
+                                    Axis newAxis = axis.GetComponent<Axis>();
+                                    data = newAxis.DataArraytest;               //on récupère les données de chaque axe
+                                    List<float> dataToMean = new List<float>();
+
+                                    foreach (float data1 in data)
+                                    {
+                                        dataToMean.Add(data1);
+                                    }
+
+                                    //valeur moyenne des valeurs contenues dans chaques axes
+                                    double averageValues = dataToMean.Average();
+
+                                    System.Console.WriteLine(averageValues);
+                                }
+                                //TODO : Créer un objet moyenne, pouvant être déplacé et associé à des axes
 
                             }
                             break;
