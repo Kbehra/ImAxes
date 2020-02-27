@@ -252,51 +252,28 @@ namespace RadialMenu
                                         }
 
                                         // Calcul de la moyenne
-                                        //valeur moyenne des valeurs contenues dans chaques axes
-                                        double averageValue = dataList.Average();
+                                        double averageValue = CalcMean(dataList);
 
                                         System.Console.WriteLine(" Average value of " + axis.name + " : ");     //debug average value
                                         System.Console.WriteLine(averageValue);
 
-                                        // Calcul de l'ecart type s= sqrt( sum( (x - averageValue)² ) / nb_x )
-                                        double sum = 0;
-
-                                        foreach (float idata in dataList)
-                                        {
-                                            sum += ((idata - averageValue) * (idata - averageValue));   //sum( (x - averageValue)² )
-                                        }
-
-                                        float stdDeviation = Mathf.Sqrt((float)(sum / dataList.Count));
+                                        // Calcul de l'ecart type
+                                        float stdDeviation = CalcStdDeviation(dataList);
 
                                         System.Console.WriteLine(" Standart Deviation of " + axis.name + " : ");     //debug standart deviation
                                         System.Console.WriteLine(stdDeviation);
 
-                                        //calcul de la médiane
-                                        List<float> dataListSorted = dataList;
-                                        dataListSorted.Sort();
-
-                                        int size = dataListSorted.Count;                        // exemple : size = 8, size = 7
-                                        int q1 = Mathf.FloorToInt((float) (size / 4));          // q1 = 2, q1 = 1.75 (= 1)
-                                        int mid = Mathf.FloorToInt((float)(size / 2));          //mid = 4, mid = 3.5 (= 3)
-                                        int q3 = Mathf.FloorToInt((float)((size * 3) / 4));     //q3 = 6, q3 = 5.25 (= 5)
-
-                                        // si le nombre d'élément de la liste est impair, on prend la valeur a 1/4 de la liste, sinon on fais la moyenne des valeurs autour
-                                        double quartile1 = (size % 2 != 0) ? (double)dataListSorted[q1] : ((double)dataListSorted[q1] + (double)dataListSorted[q1 - 1]) / 2;
-
+                                        //  Calcul des quartiles (25%, 50% ou médiane, 75%)
+                                        double[] quartile = CalcPercent(dataList);
+                                        
                                         System.Console.WriteLine(" First Quartile of " + axis.name + " : ");     //debug Quartile 1
-                                        System.Console.WriteLine(quartile1);
-
-                                        // si le nombre d'élément de la liste est impair, on prend la valeur du milieu, sinon on fais la moyenne des valeurs autour du milieu
-                                        double median = (size % 2 != 0) ? (double)dataListSorted[mid] : ((double)dataListSorted[mid] + (double)dataListSorted[mid - 1]) / 2;
-
+                                        System.Console.WriteLine(quartile[0]);
+                                        
                                         System.Console.WriteLine(" Median of " + axis.name + " : ");     //debug median
-                                        System.Console.WriteLine(median);
-
-                                        // si le nombre d'élément de la liste est impair, on prend la valeur a 3/4 de la liste sinon on fais la moyenne des valeurs autour
-                                        double quartile2 = (size % 2 != 0) ? (double)dataListSorted[q3] : ((double)dataListSorted[q3] + (double)dataListSorted[q3 - 1]) / 2;
-
+                                        System.Console.WriteLine(quartile[1]);
+                                        
                                         System.Console.WriteLine(" Third Quartile of " + axis.name + " : ");     //debug Quartile 2
-                                        System.Console.WriteLine(quartile2);
+                                        System.Console.WriteLine(quartile[2]);
 
                                     }
                                     //TODO : Créer un objet moyenne, pouvant être déplacé et associé à des axes
