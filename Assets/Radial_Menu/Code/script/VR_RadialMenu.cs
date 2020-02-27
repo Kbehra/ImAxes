@@ -48,6 +48,50 @@ namespace RadialMenu
         private List<GameObject> listAxis = new List<GameObject>();     //list of axis selected by controllers
         #endregion
 
+        #region Statistic Methods
+        private double CalcMean(List<float> dataList)       // Calcule la moyenne d'une liste de float
+        {
+            //valeur moyenne des valeurs contenues dans chaques axes
+            return dataList.Average();
+        }
+
+        private float CalcStdDeviation(List<float> dataList)    // Calcul de l'ecart type d'une liste de float
+        {
+            double sum = 0;
+
+            foreach (float idata in dataList)
+            {
+                sum += ((idata - CalcMean(dataList)) * (idata - CalcMean(dataList)));   //sum( (x - averageValue)² )
+            }
+            
+            return Mathf.Sqrt((float)(sum / dataList.Count));       //s = sqrt(sum((x - averageValue)² ) / nb_x)
+        }
+
+        private double[] CalcPercent(List<float> dataList)
+        {
+            double[] quartile = new double[3];          //renvoi un tableau quartile[0] = premier quartile = 25%
+            List<float> dataListSorted = dataList;      //                  quartile[1] = deuxieme quartile = mediane = 50%
+            dataListSorted.Sort();                      //                  quartile[2] = troisieme quartile = 75%
+
+            int size = dataListSorted.Count;                        // exemple : size = 8, size = 7
+            int q1 = Mathf.FloorToInt((float)(size / 4));          // q1 = 2, q1 = 1.75 (= 1)
+            int mid = Mathf.FloorToInt((float)(size / 2));          //mid = 4, mid = 3.5 (= 3)
+            int q3 = Mathf.FloorToInt((float)((size * 3) / 4));     //q3 = 6, q3 = 5.25 (= 5)
+
+            // si le nombre d'élément de la liste est impair, on prend la valeur a 1/4 de la liste, sinon on fais la moyenne des valeurs autour
+            quartile[0] = (size % 2 != 0) ? (double)dataListSorted[q1] : ((double)dataListSorted[q1] + (double)dataListSorted[q1 - 1]) / 2;
+
+            // si le nombre d'élément de la liste est impair, on prend la valeur du milieu, sinon on fais la moyenne des valeurs autour du milieu
+            quartile[1] = (size % 2 != 0) ? (double)dataListSorted[mid] : ((double)dataListSorted[mid] + (double)dataListSorted[mid - 1]) / 2;
+
+            // si le nombre d'élément de la liste est impair, on prend la valeur a 3/4 de la liste sinon on fais la moyenne des valeurs autour
+            quartile[2] = (size % 2 != 0) ? (double)dataListSorted[q3] : ((double)dataListSorted[q3] + (double)dataListSorted[q3 - 1]) / 2;
+
+            return quartile;
+        }
+
+        #endregion
+
         #region Main Methods
         // Start is called before the first frame update
         void Start()
@@ -337,5 +381,6 @@ namespace RadialMenu
 
         }
         #endregion
+
     }
 }
