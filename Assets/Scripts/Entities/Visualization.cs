@@ -270,11 +270,11 @@ public class Visualization : MonoBehaviour, Grabbable, Brushable
         }
         catch (MissingReferenceException)
         {
-            Debug.Log("ERROR : unable to hide histogram");
+            //Debug.Log("ERROR : unable to hide histogram");
         }
         finally
         {
-            Debug.Log("Pass");
+           // Debug.Log("Pass");
         }
     }
 

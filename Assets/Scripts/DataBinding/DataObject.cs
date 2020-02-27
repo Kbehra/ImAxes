@@ -275,6 +275,11 @@ namespace DataBinding
             return nearestValue(sortedDimensions[indexToDimension(dimension)], value);
         }
 
+        public float[,] getOriginalValues()
+        {
+            return originalDataValues; 
+        }
+
         /// <summary>
         /// gets the original value from the dimension
         /// </summary>
@@ -466,6 +471,7 @@ namespace DataBinding
             int res = 0;
             return int.TryParse(value, out res);
         }
+
         public bool isFloat(string value)
         {
             float res = 0f;

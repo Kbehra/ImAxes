@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Linq;
+using MathNet.Numerics.Statistics;
 
 namespace RadialMenu
 {
@@ -46,25 +47,22 @@ namespace RadialMenu
 
         //private VR_Screenshot screenshot = new VR_Screenshot();
         private List<GameObject> listAxis = new List<GameObject>();     //list of axis selected by controllers
+        private List<float> dataList;                                   //list of data attached on selected axis
         #endregion
 
         #region Statistic Methods
-        private double CalcMean(List<float> dataList)       // Calcule la moyenne d'une liste de float
+        private double CalcMean(List<float> dataList)       
         {
-            //valeur moyenne des valeurs contenues dans chaques axes
+            // compute mean of a list
             return dataList.Average();
         }
 
-        private float CalcStdDeviation(List<float> dataList)    // Calcul de l'ecart type d'une liste de float
+        private double CalcStdDeviation(List<float> dataList)
         {
-            double sum = 0;
+            // compute std with MathNet.numerics (.NET 4.0)
+            double std = dataList.StandardDeviation();
 
-            foreach (float idata in dataList)
-            {
-                sum += ((idata - CalcMean(dataList)) * (idata - CalcMean(dataList)));   //sum( (x - averageValue)² )
-            }
-            
-            return Mathf.Sqrt((float)(sum / dataList.Count));       //s = sqrt(sum((x - averageValue)² ) / nb_x)
+            return std;
         }
 
         private double[] CalcPercent(List<float> dataList)
@@ -205,6 +203,51 @@ namespace RadialMenu
                 currentAxis = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick); 
                 currentAngle = Vector2.SignedAngle(Vector2.up, currentAxis);
 
+                // for statistics uses
+                float[,] data;
+                GameObject controller1 = GameObject.Find("Controller (right)");             //get right controller
+                GameObject controller2 = GameObject.Find("Controller (left)");              //get left controller
+
+                foreach (Transform child in controller1.transform)
+                {
+                    // get current axis on right controller
+                    if (child.tag == "Axis")
+                    {
+                        listAxis.Add(child.gameObject);
+                    }
+                }
+                foreach (Transform child in controller2.transform)
+                {
+                    // get current axis on left controller
+                    if (child.tag == "Axis")
+                    {
+                        listAxis.Add(child.gameObject);
+                    }
+                }
+
+                if (listAxis != null)
+                {
+                    foreach (GameObject axis in listAxis)
+                    {
+                        // get data on selected axis
+                        Axis newAxis = axis.GetComponent<Axis>();
+                        data = newAxis.DataArraytest;             
+                        // axis data
+                        dataList = new List<float>();                
+             
+                        if (data != null)
+                        {
+                            foreach (float data1 in data)
+                            {
+                                // add data on a list
+                                dataList.Add(data1);
+                                //Debug.Log(data1);
+                            }
+                        }
+                    }
+                }
+
+
                 float menuAngle = currentAngle; 
                 if(menuAngle < 0)
                 {
@@ -216,77 +259,48 @@ namespace RadialMenu
                 {
                     switch (updateMenuID)
                     {
-                        case 0: //Mean
+                        case 0: 
+                            // compute mean
                             {
-                                // Statistics
-                                float[,] data;
-                                GameObject controller1 = GameObject.Find("Controller (right)"); //get right controller
-                                GameObject controller2 = GameObject.Find("Controller (left)");  //get left controller
-
-                                foreach (Transform child in controller1.transform)  // liste des axes attachés au controlleur droit
+                                if (dataList != null)
                                 {
-                                    if (child.tag == "Axis")
-                                    {
-                                        listAxis.Add(child.gameObject);
-                                    }
+                                    double averageValue = CalcMean(dataList);
+
+                                    HandleDebugText(averageValue.ToString().Substring(0, 6));        //--debug mean
                                 }
-                                foreach (Transform child in controller2.transform)  // liste des axes attachés au controlleur gauche
-                                {
-                                    if (child.tag == "Axis")
-                                    {
-                                        listAxis.Add(child.gameObject);
-                                    }
-                                }
-
-                                if (listAxis != null)
-                                {
-                                    foreach (GameObject axis in listAxis)  // pour tout les axes sélectionnés
-                                    {
-                                        Axis newAxis = axis.GetComponent<Axis>();
-                                        data = newAxis.DataArraytest;               //on récupère les données de chaque axe
-                                        List<float> dataList = new List<float>(); //liste temporaire de données de l'axe
-
-                                        foreach (float data1 in data)
-                                        {
-                                            dataList.Add(data1);                  //on met les données pour chaque axes dans la liste
-                                        }
-
-                                        // Calcul de la moyenne
-                                        double averageValue = CalcMean(dataList);
-
-                                        System.Console.WriteLine(" Average value of " + axis.name + " : ");     //debug average value
-                                        System.Console.WriteLine(averageValue);
-
-                                        // Calcul de l'ecart type
-                                        float stdDeviation = CalcStdDeviation(dataList);
-
-                                        System.Console.WriteLine(" Standart Deviation of " + axis.name + " : ");     //debug standart deviation
-                                        System.Console.WriteLine(stdDeviation);
-
-                                        //  Calcul des quartiles (25%, 50% ou médiane, 75%)
-                                        double[] quartile = CalcPercent(dataList);
-                                        
-                                        System.Console.WriteLine(" First Quartile of " + axis.name + " : ");     //debug Quartile 1
-                                        System.Console.WriteLine(quartile[0]);
-                                        
-                                        System.Console.WriteLine(" Median of " + axis.name + " : ");     //debug median
-                                        System.Console.WriteLine(quartile[1]);
-                                        
-                                        System.Console.WriteLine(" Third Quartile of " + axis.name + " : ");     //debug Quartile 2
-                                        System.Console.WriteLine(quartile[2]);
-
-                                    }
-                                    //TODO : Créer un objet moyenne, pouvant être déplacé et associé à des axes
-
-                                    //TODO : Créer un objet ecart-type, pouvant être déplacé et associé à des axes
-
-                                    //TODO : Créer un objet quartile1, quartile2 et mediane, pouvant être déplacé et associé à des axes
+                                //Debug.Log(" Average value of " + axis.name + " : ");     //debug average value
+                                //Debug.Log(averageValue);
 
 
-                                }
+
+
+                                //Debug.Log(" Standart Deviation of "+ " : " + stdDeviation.ToString());     //debug standart deviation
+                                //Debug.Log();
+
+                                //  Calcul des quartiles (25%, 50% ou médiane, 75%)
+                                //double[] quartile = CalcPercent(dataList);
+
+                                //Debug.Log(" First Quartile of " + axis.name + " : ");     //debug Quartile 1
+                                //Debug.Log(quartile[0]);
+
+                                //Debug.Log(" Median of " + axis.name + " : ");     //debug median
+                                //Debug.Log(quartile[1]);
+
+                                // Debug.Log(" Third Quartile of " + axis.name + " : ");     //debug Quartile 2
+                                //Debug.Log(quartile[2]);
+
+                                // }
+                                //TODO : Créer un objet moyenne, pouvant être déplacé et associé à des axes
+
+                                //TODO : Créer un objet ecart-type, pouvant être déplacé et associé à des axes
+
+                                //TODO : Créer un objet quartile1, quartile2 et mediane, pouvant être déplacé et associé à des axes
+
+
+                                //}
 
                                 // on vide la liste d'axe afin de pouvoir refaire le calcul en sélectionnant d'autres axes
-                                listAxis.Clear();
+                   
                             }
                             break;
                         case 1:
@@ -317,8 +331,15 @@ namespace RadialMenu
                             }
                             break;
                         case 6:
-                            // standard deviation (écart-type)
-                            // Fait au dessus, fct ? ou calcul direct puis accés aux données?
+                            // compute std
+                            if (dataList != null)
+                            {
+                                double std = CalcStdDeviation(dataList);
+
+                                HandleDebugText(std.ToString().Substring(0, 6));                    //--debug std  
+                            }
+                          
+
                             break;
                         case 7:
                             // percentage
@@ -332,9 +353,12 @@ namespace RadialMenu
                     HandleDebugText(updateMenuID.ToString());
                 }
 
+                listAxis.Clear();
+                dataList.Clear();
+
 
                 //Update current Id
-                if(updateMenuID != currentMenuID)
+                if (updateMenuID != currentMenuID)
                 {
                     if(OnHover != null)
                     {

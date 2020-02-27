@@ -84,8 +84,9 @@ public class Axis : MonoBehaviour, Grabbable {
         SourceIndex = idx;
         axisId = idx;
         name = "axis " + srcData.indexToDimension(idx);
+
         //test--
-        dataArraytest = srcData.DataArray;
+        dataArraytest = srcData.getOriginalValues();
         //---
         AttributeRange = srcData.DimensionsRange[axisId];
         label.text = srcData.Identifiers[idx];
