@@ -204,7 +204,7 @@ namespace RadialMenu
                 currentAngle = Vector2.SignedAngle(Vector2.up, currentAxis);
 
                 // for statistics uses
-                float[,] data;
+                DataBinding.DataObject data;
                 GameObject controller1 = GameObject.Find("Controller (right)");             //get right controller
                 GameObject controller2 = GameObject.Find("Controller (left)");              //get left controller
 
@@ -229,19 +229,26 @@ namespace RadialMenu
                 {
                     foreach (GameObject axis in listAxis)
                     {
-                        // get data on selected axis
+                        // get (all) data on selected axis
                         Axis newAxis = axis.GetComponent<Axis>();
-                        data = newAxis.DataArraytest;             
+
+                        data = newAxis.DataArraytest;
+
+                        // id of the axis
+                        int axisID = newAxis.GetSourceIndex(); 
+
+                        string name = axis.name;
+
                         // axis data
                         dataList = new List<float>();                
              
                         if (data != null)
                         {
-                            foreach (float data1 in data)
+                            List<List<float>> originalCSVValues = data.getOriginalValues(); 
+
+                            for (int i = 0; i<originalCSVValues.Count(); i++)
                             {
-                                // add data on a list
-                                dataList.Add(data1);
-                                //Debug.Log(data1);
+                                dataList.Add(originalCSVValues[i][axisID]);
                             }
                         }
                     }
@@ -268,38 +275,7 @@ namespace RadialMenu
 
                                     HandleDebugText(averageValue.ToString().Substring(0, 6));        //--debug mean
                                 }
-                                //Debug.Log(" Average value of " + axis.name + " : ");     //debug average value
-                                //Debug.Log(averageValue);
-
-
-
-
-                                //Debug.Log(" Standart Deviation of "+ " : " + stdDeviation.ToString());     //debug standart deviation
-                                //Debug.Log();
-
-                                //  Calcul des quartiles (25%, 50% ou médiane, 75%)
-                                //double[] quartile = CalcPercent(dataList);
-
-                                //Debug.Log(" First Quartile of " + axis.name + " : ");     //debug Quartile 1
-                                //Debug.Log(quartile[0]);
-
-                                //Debug.Log(" Median of " + axis.name + " : ");     //debug median
-                                //Debug.Log(quartile[1]);
-
-                                // Debug.Log(" Third Quartile of " + axis.name + " : ");     //debug Quartile 2
-                                //Debug.Log(quartile[2]);
-
-                                // }
-                                //TODO : Créer un objet moyenne, pouvant être déplacé et associé à des axes
-
-                                //TODO : Créer un objet ecart-type, pouvant être déplacé et associé à des axes
-
-                                //TODO : Créer un objet quartile1, quartile2 et mediane, pouvant être déplacé et associé à des axes
-
-
-                                //}
-
-                                // on vide la liste d'axe afin de pouvoir refaire le calcul en sélectionnant d'autres axes
+           
                    
                             }
                             break;
@@ -353,6 +329,7 @@ namespace RadialMenu
                     HandleDebugText(updateMenuID.ToString());
                 }
 
+                // clear data selection
                 listAxis.Clear();
                 dataList.Clear();
 

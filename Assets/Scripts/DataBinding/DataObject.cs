@@ -14,6 +14,9 @@ namespace DataBinding
     public class DataObject
     {
         float[,] dataArray;
+
+        List<List<float>> originalCSVvalues = new List<List<float>>(); 
+
         int dataPoints;
         int nbDimensions;
 
@@ -149,16 +152,32 @@ namespace DataBinding
             }
 
             float textualPointer = 0f;
+
+            // setup original csv values 
+            for (int i = 1; i < lines.Length; i++)
+            {
+                // foreach i, we add a line 
+
+                originalCSVvalues.Add(new List<float>());
+            }
+
             //line reading
             for (int i = 1; i < lines.Length; i++)
             {
                 string[] values = lines[i].Split(split);
+
                 //dimension reading
+
                 for (int k = 0; k < identifiers.Length; k++)
                 {
 
                     string cleanedValue = values[k].Replace("\r", string.Empty);
 
+                    string valuetokeep = cleanedValue; 
+
+                    originalCSVvalues[i-1].Add(float.Parse(cleanedValue, System.Globalization.CultureInfo.InvariantCulture.NumberFormat)); 
+
+                 
                     //1- get the corresponding type
                     if (isBool(cleanedValue))
                     {
@@ -201,7 +220,7 @@ namespace DataBinding
                     }
                 }
             }
-
+          
             normaliseArray(metadataPreset);
 
             //build the dictionnary of sorted dimensions
@@ -275,9 +294,9 @@ namespace DataBinding
             return nearestValue(sortedDimensions[indexToDimension(dimension)], value);
         }
 
-        public float[,] getOriginalValues()
+        public List<List<float>> getOriginalValues()
         {
-            return originalDataValues; 
+            return originalCSVvalues; 
         }
 
         /// <summary>

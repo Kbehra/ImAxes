@@ -71,12 +71,18 @@ public class Axis : MonoBehaviour, Grabbable {
     Axis ghostSourceAxis = null;
 
     //test data ----
-    float[,] dataArraytest;
-    public float[,] DataArraytest
+    DataBinding.DataObject dataArraytest;
+    public DataBinding.DataObject DataArraytest
     {
         get { return dataArraytest; }
         set { dataArraytest = value; }
     }
+
+    public int GetSourceIndex()
+    {
+        return SourceIndex; 
+    }
+
     //fin test ----
 
     public void Init(DataBinding.DataObject srcData, int idx, bool isPrototype = false)
@@ -86,7 +92,7 @@ public class Axis : MonoBehaviour, Grabbable {
         name = "axis " + srcData.indexToDimension(idx);
 
         //test--
-        dataArraytest = srcData.getOriginalValues();
+        dataArraytest = srcData;
         //---
         AttributeRange = srcData.DimensionsRange[axisId];
         label.text = srcData.Identifiers[idx];
