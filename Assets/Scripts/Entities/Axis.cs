@@ -30,7 +30,7 @@ public class Axis : MonoBehaviour, Grabbable {
     [SerializeField] Transform minNormaliserObject;
     [SerializeField] Transform maxNormaliserObject;
 
-    [SerializeField] Renderer ticksRenderer;
+    [SerializeField] Renderer ticksRenderer;    //Box = axis cylinder
 
     [Space(10)]
 
