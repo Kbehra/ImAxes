@@ -12,6 +12,7 @@ public class VR_ResizeAxes : MonoBehaviour
     Vector3 newScale;
 
     float MinScaleY = 0.266f;
+    float MaxScaleY = 7.0f;
 
     bool firstTimeClick = true;
 
@@ -81,18 +82,14 @@ public class VR_ResizeAxes : MonoBehaviour
                 {
                     //Saving initial scale to set it if the scaling goes wrong
                     initialScale = axis.transform.localScale;
-
-                    //Calculating new scale of axes -> newScale = ((initialScale * currentDistance) / initialDistance) 
-                    /*newScale = new Vector3((axis.transform.localScale.x / initialDistance.x) * currentDistance.x,
-                                           (axis.transform.localScale.y / initialDistance.y) * currentDistance.y,
-                                           (axis.transform.localScale.z / initialDistance.z) * currentDistance.z);*/
+                    
                     newScale = (axis.transform.localScale * currentDistance.magnitude) / initialDistance.magnitude;
 
                     //Set new scale to the axis
                     axis.transform.localScale = newScale;
 
-                    // make sure axes's scale doesn't go below the initial scale (initial = when created)
-                    if (axis.transform.localScale.y < MinScaleY)
+                    // make sure axes's scale doesn't go below the initial scale (initial = when created), we also fixed the maximum scale
+                    if ((axis.transform.localScale.y < MinScaleY) || (axis.transform.localScale.y > MaxScaleY))
                     {
                         axis.transform.localScale = initialScale;
                     }

@@ -33,6 +33,11 @@ public class Visualization : MonoBehaviour, Grabbable, Brushable
     public List<Axis> axes { get; internal set; }
     public int axesCount { get { return axes.Count; } }
 
+    //TEST----------
+    Vector3 axesScaleinit;
+    bool first = true;
+    //end TEST
+
     ReferenceAxis referenceAxis;
 
     public ReferenceAxis ReferenceAxis1
@@ -580,9 +585,22 @@ public class Visualization : MonoBehaviour, Grabbable, Brushable
                 {
                     if (axes.Count > 0)
                     {
+                        //TEST--------------
+                        if (first)
+                        {
+                            axesScaleinit = axes[0].transform.localScale;
+                            first = false;
+                        }
+
+                        Vector3 scaleofaxes = axes[0].transform.localScale; 
                         Vector3 pos = axes[0].transform.position;
-                        pos += axes[0].transform.TransformDirection(Vector3.right * 0.1f);
+                        pos += axes[0].transform.TransformDirection(Vector3.right * 0.1f * (scaleofaxes.x/axesScaleinit.x));    //problem : not proportionnal..
                         transform.position = pos;
+                        //end test -----------
+
+                        /*Vector3 pos = axes[0].transform.position;
+                        pos += axes[0].transform.TransformDirection(Vector3.right * 0.1f);
+                        transform.position = pos;*/
                         transform.rotation = axes[0].transform.rotation;
 
                         Vector3 up = axes[0].transform.TransformPoint(Vector3.up * 0.5f);
