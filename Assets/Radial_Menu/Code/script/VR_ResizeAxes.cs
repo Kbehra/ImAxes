@@ -8,8 +8,10 @@ public class VR_ResizeAxes : MonoBehaviour
     
     Vector3 initialDistance;
     Vector3 currentDistance;
-    Vector3 initialScale;
-    Vector3 newScale;
+    Vector3 initialScaleAxes;
+    Vector3 initialScaleVisu;
+    Vector3 newScaleAxes;
+    Vector3 newScaleVisu;
 
     float MinScaleY = 0.266f;
     float MaxScaleY = 7.0f;
@@ -80,18 +82,26 @@ public class VR_ResizeAxes : MonoBehaviour
             {
                 foreach (GameObject axis in listAxis)
                 {
-                    //Saving initial scale to set it if the scaling goes wrong
-                    initialScale = axis.transform.localScale;
-                    
-                    newScale = (axis.transform.localScale * currentDistance.magnitude) / initialDistance.magnitude;
+                    //Searching visualisation (values) of this axes
+                    string visualisationName = axis.name + " " + "visualisation";
 
-                    //Set new scale to the axis
-                    axis.transform.localScale = newScale;
+                    //Saving initial scale to set it if the scaling goes wrong
+                    initialScaleAxes = axis.transform.localScale;
+                    initialScaleVisu = GameObject.Find(visualisationName).transform.localScale;
+
+                    //Calculate new scale
+                    newScaleAxes = (axis.transform.localScale * currentDistance.magnitude) / initialDistance.magnitude;
+                    newScaleVisu = (GameObject.Find(visualisationName).transform.localScale * currentDistance.magnitude) / initialDistance.magnitude;
+
+                    //Set new scale to the axis and its visualisation
+                    axis.transform.localScale = newScaleAxes;
+                    GameObject.Find(visualisationName).transform.localScale = newScaleVisu;
 
                     // make sure axes's scale doesn't go below the initial scale (initial = when created), we also fixed the maximum scale
                     if ((axis.transform.localScale.y < MinScaleY) || (axis.transform.localScale.y > MaxScaleY))
                     {
-                        axis.transform.localScale = initialScale;
+                        axis.transform.localScale = initialScaleAxes;
+                        GameObject.Find(visualisationName).transform.localScale = initialScaleVisu;
                     }
                 }
             }

@@ -33,10 +33,9 @@ public class Visualization : MonoBehaviour, Grabbable, Brushable
     public List<Axis> axes { get; internal set; }
     public int axesCount { get { return axes.Count; } }
 
-    //TEST----------
+    //To rescale values when rescaling axes
     Vector3 axesScaleinit;
     bool first = true;
-    //end TEST
 
     ReferenceAxis referenceAxis;
 
@@ -594,7 +593,7 @@ public class Visualization : MonoBehaviour, Grabbable, Brushable
 
                         Vector3 scaleofaxes = axes[0].transform.localScale; 
                         Vector3 pos = axes[0].transform.position;
-                        pos += axes[0].transform.TransformDirection(Vector3.right * 0.1f * (scaleofaxes.x/axesScaleinit.x));    //problem : not proportionnal..
+                        pos += axes[0].transform.TransformDirection(Vector3.right * 0.1f) * (scaleofaxes.x / axesScaleinit.x); 
                         transform.position = pos;
                         //end test -----------
 
