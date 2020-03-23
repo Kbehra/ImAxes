@@ -45,6 +45,8 @@ public class Axis : MonoBehaviour, Grabbable {
     public float MinNormaliser;
     public float MaxNormaliser;
 
+    private float dataMean;
+
     public bool isDirty;
 
     public bool isInSplom;
@@ -258,6 +260,11 @@ public class Axis : MonoBehaviour, Grabbable {
         UpdateRangeText();
         OnNormalized.Invoke(MinNormaliser, MaxNormaliser);
         UpdateTicks();
+    }
+
+    public void SetMean(float val)
+    {
+        dataMean = val;     //TODO : method to see it on the axis or its visualisation (using shader or text...)
     }
 
     public GameObject Clone()

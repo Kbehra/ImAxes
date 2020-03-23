@@ -227,7 +227,7 @@ namespace RadialMenu
 
                 if (listAxis != null)
                 {
-                    foreach (GameObject axis in listAxis)
+                    foreach (GameObject axis in listAxis)                       //TODO : change this because it cause a problem (see later, ->)
                     {
                         // get (all) data on selected axis
                         Axis newAxis = axis.GetComponent<Axis>();
@@ -238,22 +238,22 @@ namespace RadialMenu
                         int axisID = newAxis.GetSourceIndex(); 
 
                         string name = axis.name;
-
+                        
                         // axis data
-                        dataList = new List<float>();                
-             
+                        dataList = new List<float>();                           //(->) here we clear the list              
+
                         if (data != null)
                         {
                             List<List<float>> originalCSVValues = data.getOriginalValues(); 
 
                             for (int i = 0; i<originalCSVValues.Count(); i++)
                             {
-                                dataList.Add(originalCSVValues[i][axisID]);
+                                dataList.Add(originalCSVValues[i][axisID]);     //(->) and we add the values of the current axis
                             }
-                        }
-                    }
-                }
-
+                        }                                                       //(->) but at the end we have the variable dataList with only the values of the last axis in the listAxis...
+                    }                                                           //(->) maybe it can be useful to create List<List<float>> dataListList = new List<List<float>>(); 
+                }                                                               //(->) or another type of variables but we need to keep all the values if we want to calculate the mean of 
+                                                                                //(->) more than one axes and also to be able to see the mean on his axis
 
                 float menuAngle = currentAngle; 
                 if(menuAngle < 0)
@@ -272,6 +272,8 @@ namespace RadialMenu
                                 if (dataList != null)
                                 {
                                     double averageValue = CalcMean(dataList);
+
+                                    //listAxis[0,1...].SetMean(averageValue);   //to add if we need to see it on the axis 
 
                                     HandleDebugText(averageValue.ToString().Substring(0, 6));        //--debug mean
                                 }
@@ -319,7 +321,12 @@ namespace RadialMenu
                             break;
                         case 7:
                             // percentage
-                            // Fait au dessus, fct ? ou calcul direct puis accés aux données?
+                            if (dataList != null)
+                            {
+                                double[] quartile = CalcPercent(dataList);
+
+                                HandleDebugText(quartile.ToString().Substring(0, 6));                    //--debug quartile 
+                            }   
                             break;
                     }
               
