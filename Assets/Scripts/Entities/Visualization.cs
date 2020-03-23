@@ -584,7 +584,7 @@ public class Visualization : MonoBehaviour, Grabbable, Brushable
                 {
                     if (axes.Count > 0)
                     {
-                        //TEST--------------
+                        //moving the center of the histogram visualisation to fit to the rescaled axe
                         if (first)
                         {
                             axesScaleinit = axes[0].transform.localScale;
@@ -595,7 +595,7 @@ public class Visualization : MonoBehaviour, Grabbable, Brushable
                         Vector3 pos = axes[0].transform.position;
                         pos += axes[0].transform.TransformDirection(Vector3.right * 0.1f) * (scaleofaxes.x / axesScaleinit.x); 
                         transform.position = pos;
-                        //end test -----------
+                        //end 
 
                         /*Vector3 pos = axes[0].transform.position;
                         pos += axes[0].transform.TransformDirection(Vector3.right * 0.1f);
@@ -1219,7 +1219,7 @@ public class Visualization : MonoBehaviour, Grabbable, Brushable
     /// listens to slider change values for point size value
     /// </summary>
     /// <param name="pointSize"></param>
-    private void OnChangePointSize(float pointSize)
+    public void OnChangePointSize(float pointSize)
     {
         switch (viewType)
         {

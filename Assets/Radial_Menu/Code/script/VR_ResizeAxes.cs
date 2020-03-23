@@ -10,8 +10,10 @@ public class VR_ResizeAxes : MonoBehaviour
     Vector3 currentDistance;
     Vector3 initialScaleAxes;
     Vector3 initialScaleVisu;
+    float initialPointSize = 0.4f;
     Vector3 newScaleAxes;
     Vector3 newScaleVisu;
+    float newPointSize;
 
     float MinScaleY = 0.266f;
     float MaxScaleY = 7.0f;
@@ -80,29 +82,71 @@ public class VR_ResizeAxes : MonoBehaviour
 
             if (listAxis != null)
             {
-                foreach (GameObject axis in listAxis)
+                if(listAxis.Count == 1) //histogram
                 {
                     //Searching visualisation (values) of this axes
-                    string visualisationName = axis.name + " " + "visualisation";
+                    string visualisationName = listAxis[0].name + " " + "visualisation";
 
                     //Saving initial scale to set it if the scaling goes wrong
-                    initialScaleAxes = axis.transform.localScale;
+                    initialScaleAxes = listAxis[0].transform.localScale;
                     initialScaleVisu = GameObject.Find(visualisationName).transform.localScale;
 
                     //Calculate new scale
-                    newScaleAxes = (axis.transform.localScale * currentDistance.magnitude) / initialDistance.magnitude;
+                    newScaleAxes = (listAxis[0].transform.localScale * currentDistance.magnitude) / initialDistance.magnitude;
                     newScaleVisu = (GameObject.Find(visualisationName).transform.localScale * currentDistance.magnitude) / initialDistance.magnitude;
 
                     //Set new scale to the axis and its visualisation
-                    axis.transform.localScale = newScaleAxes;
+                    listAxis[0].transform.localScale = newScaleAxes;
                     GameObject.Find(visualisationName).transform.localScale = newScaleVisu;
 
                     // make sure axes's scale doesn't go below the initial scale (initial = when created), we also fixed the maximum scale
-                    if ((axis.transform.localScale.y < MinScaleY) || (axis.transform.localScale.y > MaxScaleY))
+                    if ((listAxis[0].transform.localScale.y < MinScaleY) || (listAxis[0].transform.localScale.y > MaxScaleY))
                     {
-                        axis.transform.localScale = initialScaleAxes;
+                        listAxis[0].transform.localScale = initialScaleAxes;
                         GameObject.Find(visualisationName).transform.localScale = initialScaleVisu;
                     }
+                }
+                else if (listAxis.Count == 2)   //Scatterplot2D
+                {
+                    //Searching scatterplot visualisation of the 2 axes
+                    string visualisationName = listAxis[0].name + " " + listAxis[1].name + " " + "visualisation";
+
+                    if (GameObject.Find(visualisationName) == null)
+                    {
+                        visualisationName = listAxis[1].name + " " + listAxis[0].name + " " + "visualisation";
+                    }
+                    
+                    //Saving initial scale to set it if the scaling goes wrong
+                    initialScaleAxes = listAxis[0].transform.localScale;
+                    initialScaleVisu = GameObject.Find(visualisationName).transform.localScale;
+
+                    //Calculate new scale
+                    newScaleAxes = (listAxis[0].transform.localScale * currentDistance.magnitude) / initialDistance.magnitude;
+                    newScaleVisu = (GameObject.Find(visualisationName).transform.localScale * currentDistance.magnitude) / initialDistance.magnitude;
+
+                    //Calculate new point size, point size get smaller when axis get bigger
+                    newPointSize = (initialPointSize * initialDistance.magnitude) / currentDistance.magnitude;
+
+                    //Set new scale to the axis and its visualisation
+                    listAxis[0].transform.localScale = newScaleAxes;
+                    listAxis[1].transform.localScale = newScaleAxes;
+                    GameObject.Find(visualisationName).transform.localScale = newScaleVisu;
+
+                    //Rescaling point size to see better
+                    GameObject.Find(visualisationName).GetComponent<Visualization>().OnChangePointSize(newPointSize);
+
+                    // make sure axes's scale doesn't go below the initial scale (initial = when created), we also fixed the maximum scale
+                    if ((listAxis[0].transform.localScale.y < MinScaleY) || (listAxis[0].transform.localScale.y > MaxScaleY))
+                    {
+                        listAxis[0].transform.localScale = initialScaleAxes;
+                        listAxis[1].transform.localScale = initialScaleAxes;
+                        GameObject.Find(visualisationName).transform.localScale = initialScaleVisu;
+                        GameObject.Find(visualisationName).GetComponent<Visualization>().OnChangePointSize(initialPointSize);
+                    }
+                }
+                else if (listAxis.Count == 3)   //Scatterplot3D
+                {
+
                 }
             }
             
