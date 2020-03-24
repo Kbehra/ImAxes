@@ -27,6 +27,8 @@ public class Axis : MonoBehaviour, Grabbable {
     [SerializeField] Transform minFilterObject;
     [SerializeField] Transform maxFilterObject;
 
+    [SerializeField] GameObject meanObject;
+
     [SerializeField] Transform minNormaliserObject;
     [SerializeField] Transform maxNormaliserObject;
 
@@ -45,7 +47,7 @@ public class Axis : MonoBehaviour, Grabbable {
     public float MinNormaliser;
     public float MaxNormaliser;
 
-    private float dataMean;
+    private double dataMean = 0;    
 
     public bool isDirty;
 
@@ -89,6 +91,7 @@ public class Axis : MonoBehaviour, Grabbable {
 
     public void Init(DataBinding.DataObject srcData, int idx, bool isPrototype = false)
     {
+        meanObject.SetActive(false);
         SourceIndex = idx;
         axisId = idx;
         name = "axis " + srcData.indexToDimension(idx);
@@ -264,7 +267,21 @@ public class Axis : MonoBehaviour, Grabbable {
 
     public void SetMean(float val)
     {
-        dataMean = val;     //TODO : method to see it on the axis or its visualisation (using shader or text...)
+        dataMean = val;     
+        
+        //TODO : test if the method of calculation of the position of the mean its good or not
+        float normalisedYPosition = UtilMath.normaliseValue((float)dataMean, MinNormaliser, MaxNormaliser, -0.5f, 0.5f);
+       
+        //We don't change the x and z position we just want to moove on y 
+        meanObject.transform.position = new Vector3(meanObject.transform.position.x, normalisedYPosition, meanObject.transform.position.z);
+
+        // Unhide the mean object to see it on the axis
+        meanObject.SetActive(true);
+    }
+
+    public double GetMean()
+    {
+        return dataMean;
     }
 
     public GameObject Clone()
