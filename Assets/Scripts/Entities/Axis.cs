@@ -74,20 +74,19 @@ public class Axis : MonoBehaviour, Grabbable {
     // ghost properties
     Axis ghostSourceAxis = null;
 
-    //test data ----
-    DataBinding.DataObject dataArraytest;
-    public DataBinding.DataObject DataArraytest
+    //Source data
+    DataBinding.DataObject dataArray;
+    public DataBinding.DataObject DataArray
     {
-        get { return dataArraytest; }
-        set { dataArraytest = value; }
+        get { return dataArray; }
+        set { dataArray = value; }
     }
 
     public int GetSourceIndex()
     {
         return SourceIndex; 
     }
-
-    //fin test ----
+    
 
     public void Init(DataBinding.DataObject srcData, int idx, bool isPrototype = false)
     {
@@ -96,9 +95,9 @@ public class Axis : MonoBehaviour, Grabbable {
         axisId = idx;
         name = "axis " + srcData.indexToDimension(idx);
 
-        //test--
-        dataArraytest = srcData;
-        //---
+        // Getting source data
+        dataArray = srcData;
+        
         AttributeRange = srcData.DimensionsRange[axisId];
         label.text = srcData.Identifiers[idx];
         UpdateRangeText();
@@ -265,7 +264,7 @@ public class Axis : MonoBehaviour, Grabbable {
         UpdateTicks();
     }
 
-    public void SetMean(float val)
+    public void SetMean(double val)
     {
         dataMean = val;     
         

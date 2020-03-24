@@ -45,9 +45,11 @@ namespace RadialMenu
         private onHover OnHover = new onHover();
         private onClick OnClick = new onClick();
 
-        //private VR_Screenshot screenshot = new VR_Screenshot();
-        private List<GameObject> listAxis = new List<GameObject>();     //list of axis selected by controllers
-        private List<float> dataList;                                   //list of data attached on selected axis
+        bool firstTime = true;
+
+        private List<GameObject> listAxis = new List<GameObject>();             //list of axis selected by controllers
+        private List<List<float>> originalCSVValues = new List<List<float>>();  //all data in all axis in the scene
+
         #endregion
 
         #region Statistic Methods
@@ -65,7 +67,7 @@ namespace RadialMenu
             return std;
         }
 
-        private double[] CalcPercent(List<float> dataList)
+        private double[] CalcPercent(List<float> dataList)      //TODO : use a MathNet.numerics methods to avoid bad behaviour
         {
             double[] quartile = new double[3];          //renvoi un tableau quartile[0] = premier quartile = 25%
             List<float> dataListSorted = dataList;      //                  quartile[1] = deuxieme quartile = mediane = 50%
@@ -151,7 +153,6 @@ namespace RadialMenu
 
             HandleMenuActivation();
             UpdateMenu();
-
         }
           
     
@@ -204,7 +205,6 @@ namespace RadialMenu
                 currentAngle = Vector2.SignedAngle(Vector2.up, currentAxis);
 
                 // for statistics uses
-                DataBinding.DataObject data;
                 GameObject controller1 = GameObject.Find("Controller (right)");             //get right controller
                 GameObject controller2 = GameObject.Find("Controller (left)");              //get left controller
 
@@ -225,35 +225,21 @@ namespace RadialMenu
                     }
                 }
 
-                if (listAxis != null)
+                if (listAxis != null && firstTime)  //Getting all the data of all axes to be able to calculate mean, std...
                 {
-                    foreach (GameObject axis in listAxis)                       //TODO : change this because it cause a problem (see later, ->)
+                    firstTime = false;              //when we have all the data we don't need to get another time
+
+                    // get one axis 
+                    Axis newAxis = listAxis[0].GetComponent<Axis>();    //all axis recieve all csv data but keep only a part of them
+                                                                        //so we can take any axis and it will work
+                    DataBinding.DataObject data = newAxis.DataArray;
+                    
+                    if (data != null)
                     {
-                        // get (all) data on selected axis
-                        Axis newAxis = axis.GetComponent<Axis>();
-
-                        data = newAxis.DataArraytest;
-
-                        // id of the axis
-                        int axisID = newAxis.GetSourceIndex(); 
-
-                        string name = axis.name;
-                        
-                        // axis data
-                        dataList = new List<float>();                           //(->) here we clear the list              
-
-                        if (data != null)
-                        {
-                            List<List<float>> originalCSVValues = data.getOriginalValues(); 
-
-                            for (int i = 0; i<originalCSVValues.Count(); i++)
-                            {
-                                dataList.Add(originalCSVValues[i][axisID]);     //(->) and we add the values of the current axis
-                            }
-                        }                                                       //(->) but at the end we have the variable dataList with only the values of the last axis in the listAxis...
-                    }                                                           //(->) maybe it can be useful to create List<List<float>> dataListList = new List<List<float>>(); 
-                }                                                               //(->) or another type of variables but we need to keep all the values if we want to calculate the mean of 
-                                                                                //(->) more than one axes and also to be able to see the mean on his axis
+                         originalCSVValues = data.getOriginalValues();  //original values of the file CSV
+                    }                                                        
+                }                                                            
+                                                                                
 
                 float menuAngle = currentAngle; 
                 if(menuAngle < 0)
@@ -269,16 +255,28 @@ namespace RadialMenu
                         case 0: 
                             // compute mean
                             {
-                                if (dataList != null)
+                                foreach (GameObject axis in listAxis)
                                 {
-                                    double averageValue = CalcMean(dataList);
+                                    // id of current axis
+                                    int axisID = axis.GetComponent<Axis>().GetSourceIndex();
 
-                                    //listAxis[0,1...].SetMean(averageValue);   //to add if we need to see it on the axis 
+                                    // axis data
+                                    List<float> dataList = new List<float>();           //list of data attached on current axis
 
-                                    HandleDebugText(averageValue.ToString().Substring(0, 6));        //--debug mean
+                                    for (int i = 0; i < originalCSVValues.Count(); i++) //we put in dataList the value of this axis
+                                    {
+                                        dataList.Add(originalCSVValues[i][axisID]);     //using axisID to be sure its the good axis
+                                    }
+
+                                    if (dataList != null)                               //if there is data
+                                    {
+                                        double averageValue = CalcMean(dataList);       //we calculate the mean with those data
+
+                                        axis.GetComponent<Axis>().SetMean(averageValue);   //to show the mean value on the axis
+
+                                        HandleDebugText(averageValue.ToString().Substring(0, 6));        //--debug mean
+                                    }
                                 }
-           
-                   
                             }
                             break;
                         case 1:
@@ -310,35 +308,59 @@ namespace RadialMenu
                             break;
                         case 6:
                             // compute std
-                            if (dataList != null)
+                            foreach (GameObject axis in listAxis)
                             {
-                                double std = CalcStdDeviation(dataList);
+                                // id of current axis
+                                int axisID = axis.GetComponent<Axis>().GetSourceIndex();
 
-                                HandleDebugText(std.ToString().Substring(0, 6));                    //--debug std  
+                                // axis data
+                                List<float> dataList = new List<float>();           //list of data attached on current axis
+
+                                for (int i = 0; i < originalCSVValues.Count(); i++) //we put in dataList the value of this axis
+                                {
+                                    dataList.Add(originalCSVValues[i][axisID]);     //using axisID to be sure its the good axis
+                                }
+
+                                if (dataList != null)                               //if there is data
+                                {
+                                    double std = CalcStdDeviation(dataList);      //we calculate the std with those data
+
+                                    HandleDebugText(std.ToString().Substring(0, 6));                    //--debug std  
+                                }
                             }
-                          
-
                             break;
                         case 7:
                             // percentage
-                            if (dataList != null)
+                            foreach (GameObject axis in listAxis)
                             {
-                                double[] quartile = CalcPercent(dataList);
+                                // id of current axis
+                                int axisID = axis.GetComponent<Axis>().GetSourceIndex();
 
-                                HandleDebugText(quartile.ToString().Substring(0, 6));                    //--debug quartile 
-                            }   
+                                // axis data
+                                List<float> dataList = new List<float>();           //list of data attached on current axis
+
+                                for (int i = 0; i < originalCSVValues.Count(); i++) //we put in dataList the value of this axis
+                                {
+                                    dataList.Add(originalCSVValues[i][axisID]);     //using axisID to be sure its the good axis
+                                }
+
+                                if (dataList != null)
+                                {
+                                    double[] quartile = CalcPercent(dataList);
+
+                                    HandleDebugText(quartile.ToString().Substring(0, 6));                    //--debug quartile 
+                                }
+                            }
                             break;
                     }
-              
                 }
                 else
                 {
                     HandleDebugText(updateMenuID.ToString());
                 }
 
-                // clear data selection
+                // clear axis selection
                 listAxis.Clear();
-                dataList.Clear();
 
 
                 //Update current Id
