@@ -46,7 +46,13 @@ namespace RadialMenu
                 Destroy(rt);
                 byte[] bytes = screenShot.EncodeToPNG();
                 string filename = ScreenShotName(resWidth, resHeight);
+                System.IO.FileInfo file = new System.IO.FileInfo(filename); 
+            
+                // then we create the screenshot folder
+                file.Directory.Create();
+             
                 System.IO.File.WriteAllBytes(filename, bytes);
+                
                 Debug.Log(string.Format("Took screenshot to: {0}", filename));
                 takeHiResShot = false;
                 Destroy(gameObject);

@@ -220,18 +220,23 @@ namespace RadialMenu
                     }
                 }
 
-                if (listAxis != null && firstTime)  //Getting all the data of all axes to be able to calculate mean, std...
+                if (listAxis != null && firstTime && listAxis.Count() > 0)   
+                //Getting all the data of all axes to be able to calculate mean, std...
                 {
-                    firstTime = false;              //when we have all the data we don't need to get another time
+                    firstTime = false;             
+                    //when we have all the data we don't need to get another time
 
                     // get one axis 
-                    Axis newAxis = listAxis[0].GetComponent<Axis>();    //all axis recieve all csv data but keep only a part of them
-                                                                        //so we can take any axis and it will work
+                    Axis newAxis = listAxis[0].GetComponent<Axis>();    
+                    //all axis recieve all csv data but keep only a part of them
+                    //so we can take any axis and it will work
+
                     DataBinding.DataObject data = newAxis.DataArray;
                     
                     if (data != null)
                     {
-                         originalCSVValues = data.getOriginalValues();  //original values of the file CSV
+                         originalCSVValues = data.getOriginalValues();  
+                        //original values of the csv file
                     }                                                        
                 }                                                            
                                                                                 
@@ -256,20 +261,35 @@ namespace RadialMenu
                                     int axisID = axis.GetComponent<Axis>().GetSourceIndex();
 
                                     // axis data
-                                    List<float> dataList = new List<float>();           //list of data attached on current axis
+                                    List<float> dataList = new List<float>();           
+                                    //list of data attached on current axis
 
-                                    for (int i = 0; i < originalCSVValues.Count(); i++) //we put in dataList the value of this axis
+                                    for (int i = 0; i < originalCSVValues.Count(); i++) 
+                                        //we put in dataList the value of this axis
                                     {
-                                        dataList.Add(originalCSVValues[i][axisID]);     //using axisID to be sure its the good axis
+                                        dataList.Add(originalCSVValues[i][axisID]);     
+                                        //using axisID to be sure its the good axis
                                     }
 
-                                    if (dataList != null)                               //if there is data
+                                    if ((dataList != null))                               
+                                        //if there is data
                                     {
-                                        double averageValue = CalcMean(dataList);       //we calculate the mean with those data
+                                        try
+                                        { 
+                                            double averageValue = CalcMean(dataList);
+                                            //we calculate the mean with those data
+                                            Debug.Log("averager");
+                                            Debug.Log(averageValue);
+                                            axis.GetComponent<Axis>().SetMean(averageValue);   
+                                            //to show the mean value on the axis
 
-                                        axis.GetComponent<Axis>().SetMean(averageValue);   //to show the mean value on the axis
-
-                                        HandleDebugText(averageValue.ToString().Substring(0, 6));        //--debug mean
+                                            HandleDebugText(averageValue.ToString().Substring(0, 6));        //--debug mean
+                                        }
+                                        catch
+                                        {
+                                            //
+                                        }
+                                      
                                     }
                                 }
                             }
@@ -309,16 +329,21 @@ namespace RadialMenu
                                 int axisID = axis.GetComponent<Axis>().GetSourceIndex();
 
                                 // axis data
-                                List<float> dataList = new List<float>();           //list of data attached on current axis
+                                List<float> dataList = new List<float>();           
+                                //list of data attached on current axis
 
-                                for (int i = 0; i < originalCSVValues.Count(); i++) //we put in dataList the value of this axis
+                                for (int i = 0; i < originalCSVValues.Count(); i++) 
+                                    //we put in dataList the value of this axis
                                 {
-                                    dataList.Add(originalCSVValues[i][axisID]);     //using axisID to be sure its the good axis
+                                    dataList.Add(originalCSVValues[i][axisID]);     
+                                    //using axisID to be sure its the good axis
                                 }
 
-                                if (dataList != null)                               //if there is data
+                                if (dataList != null)                               
+                                    //if there is data
                                 {
-                                    double std = CalcStdDeviation(dataList);      //we calculate the std with those data
+                                    double std = CalcStdDeviation(dataList);      
+                                    //we calculate the std with those data
 
                                     HandleDebugText(std.ToString().Substring(0, 6));                    //--debug std  
                                 }
@@ -332,11 +357,14 @@ namespace RadialMenu
                                 int axisID = axis.GetComponent<Axis>().GetSourceIndex();
 
                                 // axis data
-                                List<float> dataList = new List<float>();           //list of data attached on current axis
+                                List<float> dataList = new List<float>();           
+                                //list of data attached on current axis
 
-                                for (int i = 0; i < originalCSVValues.Count(); i++) //we put in dataList the value of this axis
+                                for (int i = 0; i < originalCSVValues.Count(); i++) 
+                                    //we put in dataList the value of this axis
                                 {
-                                    dataList.Add(originalCSVValues[i][axisID]);     //using axisID to be sure its the good axis
+                                    dataList.Add(originalCSVValues[i][axisID]);     
+                                    //using axisID to be sure its the good axis
                                 }
 
                                 if (dataList != null)

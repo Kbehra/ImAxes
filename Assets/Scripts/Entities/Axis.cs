@@ -47,7 +47,8 @@ public class Axis : MonoBehaviour, Grabbable {
     public float MinNormaliser;
     public float MaxNormaliser;
 
-    private double dataMean = 0;    
+    // allows to bypass the default double value
+    private double dataMean = 1e37;    
 
     public bool isDirty;
 
@@ -266,16 +267,20 @@ public class Axis : MonoBehaviour, Grabbable {
 
     public void SetMean(double val)
     {
-        dataMean = val;     
-        
-        //TODO : test if the method of calculation of the position of the mean its good or not
-        float normalisedYPosition = Mathf.Clamp((float)dataMean, -0.505f, 0.505f);
+        if (dataMean == 1e37)
+        { 
+            dataMean = val;
+            //TODO : test if the method of calculation of the position of the mean its good or not
+            float normalisedYPosition = Mathf.Clamp((float)dataMean, -0.505f, 0.505f);
 
-        //We don't change the x and z position we just want to moove on y 
-        meanObject.transform.position = new Vector3(meanObject.transform.position.x, normalisedYPosition, meanObject.transform.position.z);
+            //We don't change the x and z position we just want to moove on y 
+            meanObject.transform.position = new Vector3(meanObject.transform.position.x, normalisedYPosition, meanObject.transform.position.z);
 
-        // Unhide the mean object to see it on the axis
-        meanObject.SetActive(true);
+            // Unhide the mean object to see it on the axis
+            meanObject.SetActive(true);
+        }
+        Debug.Log(dataMean); 
+        // else, we already have a mean 
     }
 
     public double GetMean()
