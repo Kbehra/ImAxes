@@ -269,8 +269,8 @@ public class Axis : MonoBehaviour, Grabbable {
         dataMean = val;     
         
         //TODO : test if the method of calculation of the position of the mean its good or not
-        float normalisedYPosition = UtilMath.normaliseValue((float)dataMean, MinNormaliser, MaxNormaliser, -0.5f, 0.5f);
-       
+        float normalisedYPosition = Mathf.Clamp((float)dataMean, -0.505f, 0.505f);
+
         //We don't change the x and z position we just want to moove on y 
         meanObject.transform.position = new Vector3(meanObject.transform.position.x, normalisedYPosition, meanObject.transform.position.z);
 

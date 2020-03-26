@@ -111,7 +111,7 @@ public class VR_ResizeAxes : MonoBehaviour
                     //Searching scatterplot visualisation of the 2 axes
                     string visualisationName = listAxis[0].name + " " + listAxis[1].name + " " + "visualisation";
 
-                    if (GameObject.Find(visualisationName) == null)
+                    if (GameObject.Find(visualisationName) == null)     //2 case
                     {
                         visualisationName = listAxis[1].name + " " + listAxis[0].name + " " + "visualisation";
                     }
@@ -146,7 +146,63 @@ public class VR_ResizeAxes : MonoBehaviour
                 }
                 else if (listAxis.Count == 3)   //Scatterplot3D
                 {
+                    //Searching scatterplot visualisation of the 3 axes //there is 6 cases
+                    string visualisationName = listAxis[0].name + " " + listAxis[1].name + " " + listAxis[2].name + " " + "visualisation";
 
+                    if (GameObject.Find(visualisationName) == null)
+                    {
+                        visualisationName = listAxis[0].name + " " + listAxis[2].name + " " + listAxis[1].name + " " + "visualisation";
+
+                        if (GameObject.Find(visualisationName) == null)
+                        {
+                            visualisationName = listAxis[1].name + " " + listAxis[0].name + " " + listAxis[2].name + " " + "visualisation";
+
+                            if (GameObject.Find(visualisationName) == null)
+                            {
+                                visualisationName = listAxis[1].name + " " + listAxis[2].name + " " + listAxis[0].name + " " + "visualisation";
+
+                                if (GameObject.Find(visualisationName) == null)
+                                {
+                                    visualisationName = listAxis[2].name + " " + listAxis[0].name + " " + listAxis[1].name + " " + "visualisation";
+
+                                    if (GameObject.Find(visualisationName) == null)
+                                    {
+                                        visualisationName = listAxis[2].name + " " + listAxis[1].name + " " + listAxis[0].name + " " + "visualisation";
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    //Saving initial scale to set it if the scaling goes wrong
+                    initialScaleAxes = listAxis[0].transform.localScale;
+                    initialScaleVisu = GameObject.Find(visualisationName).transform.localScale;
+
+                    //Calculate new scale
+                    newScaleAxes = (listAxis[0].transform.localScale * currentDistance.magnitude) / initialDistance.magnitude;
+                    newScaleVisu = (GameObject.Find(visualisationName).transform.localScale * currentDistance.magnitude) / initialDistance.magnitude;
+
+                    //Calculate new point size, point size get smaller when axis get bigger
+                    newPointSize = (initialPointSize * initialDistance.magnitude) / currentDistance.magnitude;
+
+                    //Set new scale to the axis and its visualisation
+                    listAxis[0].transform.localScale = newScaleAxes;
+                    listAxis[1].transform.localScale = newScaleAxes;
+                    listAxis[2].transform.localScale = newScaleAxes;
+                    GameObject.Find(visualisationName).transform.localScale = newScaleVisu;
+
+                    //Rescaling point size to see better
+                    GameObject.Find(visualisationName).GetComponent<Visualization>().OnChangePointSize(newPointSize);
+
+                    // make sure axes's scale doesn't go below the initial scale (initial = when created), we also fixed the maximum scale
+                    if ((listAxis[0].transform.localScale.y < MinScaleY) || (listAxis[0].transform.localScale.y > MaxScaleY))
+                    {
+                        listAxis[0].transform.localScale = initialScaleAxes;
+                        listAxis[1].transform.localScale = initialScaleAxes;
+                        listAxis[2].transform.localScale = initialScaleAxes;
+                        GameObject.Find(visualisationName).transform.localScale = initialScaleVisu;
+                        GameObject.Find(visualisationName).GetComponent<Visualization>().OnChangePointSize(initialPointSize);
+                    }
                 }
             }
             
