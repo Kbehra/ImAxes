@@ -67,25 +67,20 @@ namespace RadialMenu
             return std;
         }
 
-        private double[] CalcPercent(List<float> dataList)      //TODO : use a MathNet.numerics methods to avoid bad behaviour
+        private double[] CalcPercent(List<float> dataList)      
         {
-            double[] quartile = new double[3];          //renvoi un tableau quartile[0] = premier quartile = 25%
-            List<float> dataListSorted = dataList;      //                  quartile[1] = deuxieme quartile = mediane = 50%
-            dataListSorted.Sort();                      //                  quartile[2] = troisieme quartile = 75%
+            // compute quartile with MathNet.numerics (.NET 4.0)
+            double[] quartile = new double[5];          //renvoi un tableau quartile[0] = zero quartile = minimum = 0%
+                                                        //                  quartile[1] = premier quartile = 25%
+                                                        //                  quartile[2] = deuxieme quartile = mediane = 50%
+                                                        //                  quartile[3] = troisieme quartile = 75%
+                                                        //                  quartile[4] = quatrieme quartile = maximum = 100%
 
-            int size = dataListSorted.Count;                        // exemple : size = 8, size = 7
-            int q1 = Mathf.FloorToInt((float)(size / 4));          // q1 = 2, q1 = 1.75 (= 1)
-            int mid = Mathf.FloorToInt((float)(size / 2));          //mid = 4, mid = 3.5 (= 3)
-            int q3 = Mathf.FloorToInt((float)((size * 3) / 4));     //q3 = 6, q3 = 5.25 (= 5)
-
-            // si le nombre d'élément de la liste est impair, on prend la valeur a 1/4 de la liste, sinon on fais la moyenne des valeurs autour
-            quartile[0] = (size % 2 != 0) ? (double)dataListSorted[q1] : ((double)dataListSorted[q1] + (double)dataListSorted[q1 - 1]) / 2;
-
-            // si le nombre d'élément de la liste est impair, on prend la valeur du milieu, sinon on fais la moyenne des valeurs autour du milieu
-            quartile[1] = (size % 2 != 0) ? (double)dataListSorted[mid] : ((double)dataListSorted[mid] + (double)dataListSorted[mid - 1]) / 2;
-
-            // si le nombre d'élément de la liste est impair, on prend la valeur a 3/4 de la liste sinon on fais la moyenne des valeurs autour
-            quartile[2] = (size % 2 != 0) ? (double)dataListSorted[q3] : ((double)dataListSorted[q3] + (double)dataListSorted[q3 - 1]) / 2;
+            quartile[0] = dataList.Minimum();
+            quartile[1] = dataList.LowerQuartile();
+            quartile[0] = dataList.Median();
+            quartile[1] = dataList.UpperQuartile();
+            quartile[0] = dataList.Maximum();
 
             return quartile;
         }
