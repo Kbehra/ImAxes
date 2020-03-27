@@ -21,18 +21,27 @@ public class Axis : MonoBehaviour, Grabbable {
 
     //temporary hack 
 
+    /// <summary>
+    /// This vector contains the position of the axis
+    /// </summary>
     Vector3 originPosition;
+    /// <summary>
+    /// This quaternion contains the rotation of the axis
+    /// </summary>
     Quaternion originRotation;
 
     [SerializeField] Transform minFilterObject;
     [SerializeField] Transform maxFilterObject;
 
+    /// <summary>
+    /// This game object is a red cylinder which represents the mean of datas attached to the axis
+    /// </summary>
     [SerializeField] GameObject meanObject;
 
     [SerializeField] Transform minNormaliserObject;
     [SerializeField] Transform maxNormaliserObject;
 
-    [SerializeField] Renderer ticksRenderer;    //Box = axis cylinder
+    [SerializeField] Renderer ticksRenderer;    
 
     [Space(10)]
 
@@ -46,8 +55,10 @@ public class Axis : MonoBehaviour, Grabbable {
 
     public float MinNormaliser;
     public float MaxNormaliser;
-
-    // allows to bypass the default double value
+    
+    /// <summary>
+    /// Mean of the data of the axis, at the beginning the value is set to 1e37 to allows to bypass the default double value
+    /// </summary>
     private double dataMean = 1e37;    
 
     public bool isDirty;
@@ -75,20 +86,35 @@ public class Axis : MonoBehaviour, Grabbable {
     // ghost properties
     Axis ghostSourceAxis = null;
 
-    //Source data
+    /// <summary>
+    /// Source data
+    /// </summary>
     DataBinding.DataObject dataArray;
+
+    /// <summary>
+    /// Sets or returns the source data
+    /// </summary>
     public DataBinding.DataObject DataArray
     {
         get { return dataArray; }
         set { dataArray = value; }
     }
 
+    /// <summary>
+    /// Returns the source index (int)
+    /// </summary>
     public int GetSourceIndex()
     {
         return SourceIndex; 
     }
-    
 
+    /// <summary>
+    /// Initialises the axis, set attributes using source data 
+    /// </summary>
+    /// <param name="srcData"></param>
+    /// <param name="idx"></param>
+    /// <param name="isPrototype"></param>
+    /// <returns></returns>
     public void Init(DataBinding.DataObject srcData, int idx, bool isPrototype = false)
     {
         meanObject.SetActive(false);
@@ -109,6 +135,10 @@ public class Axis : MonoBehaviour, Grabbable {
         UpdateTicks();
     }
 
+    /// <summary>
+    /// Changes the text (minimum and maximum) showen on the axis
+    /// </summary>
+    /// <returns></returns>
     void UpdateRangeText()
     {
         string type = SceneManager.Instance.dataObject.TypeDimensionDictionary1[SourceIndex];
@@ -132,7 +162,11 @@ public class Axis : MonoBehaviour, Grabbable {
         }
     }
 
-
+    /// <summary>
+    /// Calculates the ticks scale factor of the axis using source data
+    /// </summary>
+    /// <param name="srcData"></param>
+    /// <returns></returns>
     void CalculateTicksScale(DataBinding.DataObject srcData)
     {
         float range = AttributeRange.y - AttributeRange.x;
@@ -168,20 +202,31 @@ public class Axis : MonoBehaviour, Grabbable {
         }
     }
 
+    /// <summary>
+    /// Calculates the ticks scale of the axis using the range and the ticks scale factor
+    /// </summary>
+    /// <returns></returns>
     void UpdateTicks()
     {
-
         float range = Mathf.Lerp(AttributeRange.x, AttributeRange.y, MaxNormaliser + 0.5f) - Mathf.Lerp(AttributeRange.x, AttributeRange.y, MinNormaliser + 0.5f);
         float scale = range / ticksScaleFactor;
         ticksRenderer.material.mainTextureScale = new Vector3(1, scale);
     }
 
+    /// <summary>
+    /// Debug
+    /// </summary>
+    /// <returns></returns>
     public void setDebug(string dbg)
     {
         DataBinding.DataObject srcData = SceneManager.Instance.dataObject;
         label.text = srcData.Identifiers[axisId] + "(" + dbg + ")";
     }
 
+    /// <summary>
+    /// Sets initial position and rotation of the axis
+    /// </summary>
+    /// <returns></returns>
     public void InitOrigin(Vector3 originPosition, Quaternion originRotation)
     {
         this.originPosition = originPosition;
@@ -237,18 +282,33 @@ public class Axis : MonoBehaviour, Grabbable {
         isDirty = false;
     }
 
+    /// <summary>
+    /// Sets the value of minimum filter of the axis
+    /// </summary>
+    /// <param name="val"></param>
+    /// <returns></returns>
     public void SetMinFilter(float val)
     {
         MinFilter = val;
         OnFiltered.Invoke(MinFilter, MaxFilter);
     }
 
+    /// <summary>
+    /// Sets the value of maximum filter of the axis
+    /// </summary>
+    /// <param name="val"></param>
+    /// <returns></returns>
     public void SetMaxFilter(float val)
     {
         MaxFilter = val;
         OnFiltered.Invoke(MinFilter, MaxFilter);
     }
 
+    /// <summary>
+    /// Sets the value of minimum normalizer of the axis
+    /// </summary>
+    /// <param name="val"></param>
+    /// <returns></returns>
     public void SetMinNormalizer(float val)
     {
         MinNormaliser = Mathf.Clamp(val, -0.505f, 0.505f);
@@ -257,6 +317,11 @@ public class Axis : MonoBehaviour, Grabbable {
         UpdateTicks();
     }
 
+    /// <summary>
+    /// Sets the value of maximum normalizer of the axis
+    /// </summary>
+    /// <param name="val"></param>
+    /// <returns></returns>
     public void SetMaxNormalizer(float val)
     {
         MaxNormaliser = Mathf.Clamp(val, -0.505f, 0.505f);
@@ -265,6 +330,11 @@ public class Axis : MonoBehaviour, Grabbable {
         UpdateTicks();
     }
 
+    /// <summary>
+    /// Sets the mean of the values attached to the axis
+    /// </summary>
+    /// <param name="val"></param>
+    /// <returns></returns>
     public void SetMean(double val)
     {
         if (dataMean == 1e37)
@@ -320,6 +390,7 @@ public class Axis : MonoBehaviour, Grabbable {
         // else, we already have a mean 
     }
 
+<<<<<<< HEAD
    
 
     public int FindNearestDataIndex(int dim)
@@ -352,11 +423,21 @@ public class Axis : MonoBehaviour, Grabbable {
 
 
 
+=======
+    /// <summary>
+    /// returns the value of the mean (double)
+    /// </summary>
+    /// <returns></returns>
+>>>>>>> add comments for documentation Doxygen
     public double GetMean()
     {
         return dataMean;
     }
 
+    /// <summary>
+    /// Instantiates a clone of this axis at the initial position and rotation
+    /// </summary>
+    /// <returns></returns>
     public GameObject Clone()
     {
         GameObject clone = Instantiate(gameObject, transform.position, transform.rotation, null);
@@ -367,6 +448,13 @@ public class Axis : MonoBehaviour, Grabbable {
         return clone;
     }
 
+    /// <summary>
+    /// Duplicates an axis to the position and rotation entered as a parameter
+    /// </summary>
+    /// <param name="go"></param>
+    /// <param name="tp"></param>
+    /// <param name="tr"></param>
+    /// <returns></returns>
     public GameObject Dup(GameObject go, Vector3 tp, Quaternion tr)
     {
         GameObject clone = Instantiate(go, tp, tr, null);

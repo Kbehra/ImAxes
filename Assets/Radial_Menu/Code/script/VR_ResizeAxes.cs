@@ -61,6 +61,10 @@ public class VR_ResizeAxes : MonoBehaviour
 
     #region CustomMethods
 
+    /// <summary>
+    /// Manages the resizing of axis
+    /// </summary>
+    /// <returns></returns>
     void ResizingAxes()
     {
         if (allowResizing)

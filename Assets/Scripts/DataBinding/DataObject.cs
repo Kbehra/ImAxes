@@ -104,7 +104,7 @@ namespace DataBinding
 
 
         /// <summary>
-        /// 
+        /// Loads CSV files and process data
         /// </summary>
         /// <param name="data"></param>
         public void loadCSV(string data, DataObjectMetadata metadataPreset)
@@ -294,6 +294,9 @@ namespace DataBinding
             return nearestValue(sortedDimensions[indexToDimension(dimension)], value);
         }
 
+        /// <summary>
+        /// Gets original value
+        /// </summary>
         public List<List<float>> getOriginalValues()
         {
             return originalCSVvalues; 

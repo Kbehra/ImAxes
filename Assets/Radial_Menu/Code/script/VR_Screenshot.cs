@@ -8,7 +8,14 @@ namespace RadialMenu
     public class VR_Screenshot : MonoBehaviour
     {
         #region Variables
+        /// <summary>
+        /// Width of the camera
+        /// </summary>
         public int resWidth = 2550;
+
+        /// <summary>
+        /// Height of the camera
+        /// </summary>
         public int resHeight = 3300;
 
         public Camera camera;
