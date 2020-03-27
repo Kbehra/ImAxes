@@ -9,17 +9,19 @@ public class Draggable : MonoBehaviour
 
 	void FixedUpdate()
 	{
-
-		if (Input.GetMouseButtonDown(0)) {
+		if (Input.GetMouseButtonDown(0))
+        {
 			dragging = false;
 			var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
-			if (GetComponent<Collider>().Raycast(ray, out hit, 100)) {
+			if (GetComponent<Collider>().Raycast(ray, out hit, 100))
+            {
 				dragging = true;
 			}
 		}
 		if (Input.GetMouseButtonUp(0)) dragging = false;
-		if (dragging && Input.GetMouseButton(0)) {
+		if (dragging && Input.GetMouseButton(0))
+        {
 			var point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			point = GetComponent<Collider>().ClosestPointOnBounds(point);
 			SetThumbPosition(point);

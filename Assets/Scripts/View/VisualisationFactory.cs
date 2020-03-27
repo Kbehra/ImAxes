@@ -203,7 +203,10 @@ public class VisualisationFactory : MonoBehaviour
         mesh.RecalculateBounds();
         mesh.RecalculateNormals();
 
+        //Snax.AddComponent<MeshCollider>(); //Needed to use Raycast
+        //Snax.tag = "VisualisationMesh";
         MeshRenderer meshRenderer = Snax.AddComponent<MeshRenderer>();
+
         meshRenderer.material = histogramMaterial;
         return new Tuple<GameObject, Vector3[]>(Snax, l.ToArray());
     }

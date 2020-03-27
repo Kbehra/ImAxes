@@ -15,6 +15,7 @@ TagManager:
   - Menu
   - TutorialController
   - TutorialAxis
+  - VisualisationMesh
   layers:
   - Default
   - TransparentFX

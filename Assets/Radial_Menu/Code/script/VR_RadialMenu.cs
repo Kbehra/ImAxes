@@ -15,11 +15,11 @@ namespace RadialMenu
     [RequireComponent(typeof(Animator))]                                    //requierement to handle the radialMenu 
     [RequireComponent(typeof(CanvasGroup))]                                 //fade out the RadialMenu
 
-   
+
     public class VR_RadialMenu : MonoBehaviour
     {
         #region Variables 
-   
+
         [Header("UI Properties")]
         public List<VR_MenuButton> menuButtons = new List<VR_MenuButton>();
         public RectTransform m_ArrowContainer;
@@ -27,7 +27,7 @@ namespace RadialMenu
 
         [Header("Events")]
         public UnityEvent OnMenuChanged = new UnityEvent();
-   
+
         private Vector3 currentAxis;
         private Animator animator;
 
@@ -40,7 +40,7 @@ namespace RadialMenu
         private int currentMenuID = -1;
         private int previousMenuID = -1;
 
-        public GameObject screenshot; 
+        public GameObject screenshot;
 
         private onHover OnHover = new onHover();
         private onClick OnClick = new onClick();
@@ -53,12 +53,23 @@ namespace RadialMenu
         #endregion
 
         #region Statistic Methods
-        private double CalcMean(List<float> dataList)       
+
+        /// <summary>
+        /// Compute mean of a list
+        /// </summary>
+        /// <param name="dataList"></param>
+        /// <returns></returns>
+        private double CalcMean(List<float> dataList)
         {
             // compute mean of a list
             return dataList.Average();
         }
 
+        /// <summary>
+        /// Compute standart deviation of a list
+        /// </summary>
+        /// <param name="dataList"></param>
+        /// <returns></returns>
         private double CalcStdDeviation(List<float> dataList)
         {
             // compute std with MathNet.numerics (.NET 4.0)
@@ -67,7 +78,12 @@ namespace RadialMenu
             return std;
         }
 
-        private double[] CalcPercent(List<float> dataList)      
+        /// <summary>
+        /// Compute quartile (minimum, lower quartile, median, upper quartile, maximum) of a list
+        /// </summary>
+        /// <param name="dataList"></param>
+        /// <returns></returns>
+        private double[] CalcPercent(List<float> dataList)
         {
             // compute quartile with MathNet.numerics (.NET 4.0)
             double[] quartile = new double[5];          //renvoi un tableau quartile[0] = zero quartile = minimum = 0%
@@ -95,10 +111,10 @@ namespace RadialMenu
 
             if (menuButtons.Count > 0)
             {
-                foreach(var button in menuButtons)
+                foreach (var button in menuButtons)
                 {
                     OnHover.AddListener(button.OnHover);
-                    OnClick.AddListener(button.Click); 
+                    OnClick.AddListener(button.Click);
                 }
             }
 
@@ -106,12 +122,12 @@ namespace RadialMenu
 
         private void OnDisable()
         {
-           // exact the same as start
-           if(OnHover != null)
+            // exact the same as start
+            if (OnHover != null)
             {
-                OnHover.RemoveAllListeners(); 
+                OnHover.RemoveAllListeners();
             }
-           if (OnClick != null)
+            if (OnClick != null)
             {
                 OnClick.RemoveAllListeners();
             }
@@ -125,78 +141,93 @@ namespace RadialMenu
 
             float istouch = OVRInput.Get(OVRInput.RawAxis1D.LHandTrigger);
             float isClicked = OVRInput.Get(OVRInput.RawAxis1D.LIndexTrigger);
-            
+
 
             if (isClicked == 0)
             {
-                isClick = false; 
+                isClick = false;
             }
             else
             {
-                isClick = true; 
+                isClick = true;
             }
 
 
             if (istouch == 0)
             {
-                isTouching = false; 
+                isTouching = false;
             }
             else
             {
-                isTouching = true; 
+                isTouching = true;
             }
 
             HandleMenuActivation();
             UpdateMenu();
         }
-          
-    
+
+
         #endregion
 
         #region Custom Methods
         void HandlePrimaryIndexTriggered()
         {
-            isTouching = true; 
+            isTouching = true;
             //HandleDebugText("Index Triggered");
         }
 
         void HandlePrimaryIndexUnTriggered()
         {
-            isTouching = false; 
+            isTouching = false;
             //HandleDebugText("Index unTriggered");
         }
 
+        /// <summary>
+        /// Triggers the activation of the radial menu
+        /// </summary>
+        /// <returns></returns>
         void HandleMenuActivation()
         {
-           if ((menuOpen == true && isTouching == false) || (menuOpen == false && isTouching == true))
+            if ((menuOpen == true && isTouching == false) || (menuOpen == false && isTouching == true))
             {
                 menuOpen = !menuOpen;
                 HandleAnimator();
             }
-       
+
         }
 
+        /// <summary>
+        /// Show the radial menu
+        /// </summary>
+        /// <returns></returns>
         void HandleAnimator()
         {
             if (animator)
             {
-                animator.SetBool("open", menuOpen); 
+                animator.SetBool("open", menuOpen);
             }
         }
-   
+
         void HandleDebugText(string aString)
         {
             if (m_DebugText)
             {
-                m_DebugText.text = aString; 
+                m_DebugText.text = aString;
             }
+    
+       
         }
+
+        /// <summary>
+        /// Manages the radial menu. Allows to perform the actions (statistical calculations, screenshot ...) available in the menu.
+        /// </summary>
+        /// <returns></returns>
         void UpdateMenu()
         {
-            if(isTouching)
+            if (isTouching)
             {
                 //Get the current Axis from the joystick and turn it into an angle 
-                currentAxis = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick); 
+                currentAxis = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
                 currentAngle = Vector2.SignedAngle(Vector2.up, currentAxis);
 
                 // for statistics uses
@@ -220,29 +251,29 @@ namespace RadialMenu
                     }
                 }
 
-                if (listAxis != null && firstTime && listAxis.Count() > 0)   
+                if (listAxis != null && firstTime && listAxis.Count() > 0)
                 //Getting all the data of all axes to be able to calculate mean, std...
                 {
-                    firstTime = false;             
+                    firstTime = false;
                     //when we have all the data we don't need to get another time
 
                     // get one axis 
-                    Axis newAxis = listAxis[0].GetComponent<Axis>();    
+                    Axis newAxis = listAxis[0].GetComponent<Axis>();
                     //all axis recieve all csv data but keep only a part of them
                     //so we can take any axis and it will work
 
                     DataBinding.DataObject data = newAxis.DataArray;
-                    
+
                     if (data != null)
                     {
-                         originalCSVValues = data.getOriginalValues();  
+                        originalCSVValues = data.getOriginalValues();
                         //original values of the csv file
-                    }                                                        
-                }                                                            
-                                                                                
+                    }
+                }
 
-                float menuAngle = currentAngle; 
-                if(menuAngle < 0)
+
+                float menuAngle = currentAngle;
+                if (menuAngle < 0)
                 {
                     menuAngle += 360;
                 }
@@ -252,7 +283,7 @@ namespace RadialMenu
                 {
                     switch (updateMenuID)
                     {
-                        case 0: 
+                        case 0:
                             // compute mean
                             {
                                 foreach (GameObject axis in listAxis)
@@ -261,26 +292,26 @@ namespace RadialMenu
                                     int axisID = axis.GetComponent<Axis>().GetSourceIndex();
 
                                     // axis data
-                                    List<float> dataList = new List<float>();           
+                                    List<float> dataList = new List<float>();
                                     //list of data attached on current axis
 
-                                    for (int i = 0; i < originalCSVValues.Count(); i++) 
-                                        //we put in dataList the value of this axis
+                                    for (int i = 0; i < originalCSVValues.Count(); i++)
+                                    //we put in dataList the value of this axis
                                     {
-                                        dataList.Add(originalCSVValues[i][axisID]);     
+                                        dataList.Add(originalCSVValues[i][axisID]);
                                         //using axisID to be sure its the good axis
                                     }
 
-                                    if ((dataList != null))                               
-                                        //if there is data
+                                    if ((dataList != null))
+                                    //if there is data
                                     {
                                         try
-                                        { 
+                                        {
                                             double averageValue = CalcMean(dataList);
                                             //we calculate the mean with those data
                                             Debug.Log("averager");
                                             Debug.Log(averageValue);
-                                            axis.GetComponent<Axis>().SetMean(averageValue);   
+                                            axis.GetComponent<Axis>().SetMean(averageValue);
                                             //to show the mean value on the axis
 
                                             HandleDebugText(averageValue.ToString().Substring(0, 6));        //--debug mean
@@ -289,7 +320,7 @@ namespace RadialMenu
                                         {
                                             //
                                         }
-                                      
+
                                     }
                                 }
                             }
@@ -314,7 +345,7 @@ namespace RadialMenu
                                 UI_ScreenShot.SetActive(true);
 
                                 GameObject rightcontroller = GameObject.Find("Controller (right)");
-                               
+
                                 // give the transform of the right controller to the Screenshot UI
                                 UI_ScreenShot.transform.parent = rightcontroller.transform;
                                 UI_ScreenShot.transform.position = rightcontroller.transform.position;
@@ -329,20 +360,20 @@ namespace RadialMenu
                                 int axisID = axis.GetComponent<Axis>().GetSourceIndex();
 
                                 // axis data
-                                List<float> dataList = new List<float>();           
+                                List<float> dataList = new List<float>();
                                 //list of data attached on current axis
 
-                                for (int i = 0; i < originalCSVValues.Count(); i++) 
-                                    //we put in dataList the value of this axis
+                                for (int i = 0; i < originalCSVValues.Count(); i++)
+                                //we put in dataList the value of this axis
                                 {
-                                    dataList.Add(originalCSVValues[i][axisID]);     
+                                    dataList.Add(originalCSVValues[i][axisID]);
                                     //using axisID to be sure its the good axis
                                 }
 
-                                if (dataList != null)                               
-                                    //if there is data
+                                if (dataList != null)
+                                //if there is data
                                 {
-                                    double std = CalcStdDeviation(dataList);      
+                                    double std = CalcStdDeviation(dataList);
                                     //we calculate the std with those data
 
                                     HandleDebugText(std.ToString().Substring(0, 6));                    //--debug std  
@@ -357,13 +388,13 @@ namespace RadialMenu
                                 int axisID = axis.GetComponent<Axis>().GetSourceIndex();
 
                                 // axis data
-                                List<float> dataList = new List<float>();           
+                                List<float> dataList = new List<float>();
                                 //list of data attached on current axis
 
-                                for (int i = 0; i < originalCSVValues.Count(); i++) 
-                                    //we put in dataList the value of this axis
+                                for (int i = 0; i < originalCSVValues.Count(); i++)
+                                //we put in dataList the value of this axis
                                 {
-                                    dataList.Add(originalCSVValues[i][axisID]);     
+                                    dataList.Add(originalCSVValues[i][axisID]);
                                     //using axisID to be sure its the good axis
                                 }
 
@@ -389,17 +420,17 @@ namespace RadialMenu
                 //Update current Id
                 if (updateMenuID != currentMenuID)
                 {
-                    if(OnHover != null)
+                    if (OnHover != null)
                     {
                         OnHover.Invoke(updateMenuID);
 
                     }
-                    if(OnMenuChanged != null)
+                    if (OnMenuChanged != null)
                     {
-                        OnMenuChanged.Invoke(); 
+                        OnMenuChanged.Invoke();
                     }
                     previousMenuID = currentMenuID;
-                    currentMenuID = updateMenuID; 
+                    currentMenuID = updateMenuID;
                 }
 
                 //Rotate Arrow 

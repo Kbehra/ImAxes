@@ -268,20 +268,89 @@ public class Axis : MonoBehaviour, Grabbable {
     public void SetMean(double val)
     {
         if (dataMean == 1e37)
-        { 
+        {
             dataMean = val;
+            Debug.Log(val);
+
+            List<Visualization> lv = correspondingVisualizations();
+
+            // find the nearest value to use
+            int idx = FindNearestDataIndex(axisId);
+            Debug.Log(idx);
+            float normalisedYPosition = dataArray.DataArray[idx, axisId];
+            Debug.Log(normalisedYPosition);
+
+            foreach (Visualization visu in lv)
+            {
+                switch (visu.viewType)
+                {
+                    case Visualization.ViewType.Histogram:
+                        //meanObject.SetMode("line");
+                        break;
+
+                    case Visualization.ViewType.Scatterplot2D:
+                        Debug.Log("SCATTERPLOT2D");
+                        break;
+
+                    case Visualization.ViewType.Scatterplot3D:
+                        Debug.Log("SCATTERPLOT3D"); 
+                        break; 
+
+                }
+            }
+
+
+          
+
+        
+          
+        
+
+
             //TODO : test if the method of calculation of the position of the mean its good or not
-            float normalisedYPosition = Mathf.Clamp((float)dataMean, -0.505f, 0.505f);
+            //float normalisedYPosition = Mathf.Clamp((float)dataMean, -0.505f, 0.505f);
 
             //We don't change the x and z position we just want to moove on y 
-            meanObject.transform.position = new Vector3(meanObject.transform.position.x, normalisedYPosition, meanObject.transform.position.z);
+            meanObject.transform.localPosition = new Vector3(meanObject.transform.localPosition.x, meanObject.transform.localPosition.y + normalisedYPosition, meanObject.transform.localPosition.z);
 
             // Unhide the mean object to see it on the axis
             meanObject.SetActive(true);
+            Debug.Log("ok");
         }
-        Debug.Log(dataMean); 
         // else, we already have a mean 
     }
+
+   
+
+    public int FindNearestDataIndex(int dim)
+    {
+        float nearest = 1000000000.0f;
+
+        List<List<float>> csv = dataArray.getOriginalValues();
+        float value = csv[0][dim]; 
+        int pos = 0;
+
+ 
+        Debug.Log("COUNT");
+        Debug.Log(csv.Count()); 
+        for (int i = 1; i < csv.Count(); i++)
+        {
+            value = csv[pos][dim]; 
+            if (Mathf.Abs(csv[i][dim] - value) < nearest)
+            {
+                nearest = Mathf.Abs(csv[i][dim] - value);
+                pos = i;
+            }
+        }
+        
+        Debug.Log("fin");
+        Debug.Log(pos);
+        Debug.Log(nearest); 
+        return pos; 
+
+    }
+
+
 
     public double GetMean()
     {

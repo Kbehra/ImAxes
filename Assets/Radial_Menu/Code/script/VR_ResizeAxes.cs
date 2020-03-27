@@ -127,9 +127,17 @@ public class VR_ResizeAxes : MonoBehaviour
                     //Calculate new point size, point size get smaller when axis get bigger
                     newPointSize = (initialPointSize * initialDistance.magnitude) / currentDistance.magnitude;
 
+                    //
+                    Vector3 center0 = listAxis[0].transform.position;
+                    Vector3 center1 = listAxis[1].transform.position;
+
                     //Set new scale to the axis and its visualisation
                     listAxis[0].transform.localScale = newScaleAxes;
                     listAxis[1].transform.localScale = newScaleAxes;
+
+                    listAxis[0].transform.position =center0 +  -0.5f * newScaleAxes.sqrMagnitude * newScaleAxes;
+                    listAxis[1].transform.position = center1 + -0.5f*newScaleAxes.sqrMagnitude * newScaleAxes;
+
                     GameObject.Find(visualisationName).transform.localScale = newScaleVisu;
 
                     //Rescaling point size to see better
