@@ -89,7 +89,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 6439640742255449787}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.5000001
   m_Height: 2
   m_Direction: 1
@@ -106,14 +106,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2953864e2a54094e80e50ae3d405543, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  axisOffset: 2
-  OnEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  OnExited:
-    m_PersistentCalls:
-      m_Calls: []
-  initialScale: {x: 0.005, y: 0.25, z: 0.005}
-  onValueChanged:
-    m_PersistentCalls:
-      m_Calls: []

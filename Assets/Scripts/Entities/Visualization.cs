@@ -1394,11 +1394,11 @@ public class Visualization : MonoBehaviour, Grabbable, Brushable
         }
         catch (NullReferenceException)
         {
-            Debug.Log("ERROR : unable to get detail on Demand");
+            //Debug.Log("ERROR : unable to get detail on Demand");
         }
         finally
         {
-            Debug.Log("Pass");
+            //Debug.Log("Pass");
         }
     }
 
