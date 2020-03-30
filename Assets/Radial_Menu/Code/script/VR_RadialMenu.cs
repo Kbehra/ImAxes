@@ -59,6 +59,7 @@ namespace RadialMenu
         /// </summary>
         /// <param name="dataList"></param>
         /// <returns></returns>
+
         private double CalcMean(List<float> dataList)
         {
             // compute mean of a list
@@ -83,6 +84,7 @@ namespace RadialMenu
         /// </summary>
         /// <param name="dataList"></param>
         /// <returns></returns>
+
         private double[] CalcPercent(List<float> dataList)
         {
             // compute quartile with MathNet.numerics (.NET 4.0)
@@ -214,8 +216,8 @@ namespace RadialMenu
             {
                 m_DebugText.text = aString;
             }
-    
-       
+
+
         }
 
         /// <summary>
@@ -309,11 +311,10 @@ namespace RadialMenu
                                         {
                                             double averageValue = CalcMean(dataList);
                                             //we calculate the mean with those data
-                                            Debug.Log("averager");
-                                            Debug.Log(averageValue);
-                                            axis.GetComponent<Axis>().SetMean(averageValue);
-                                            //to show the mean value on the axis
 
+                                            axis.GetComponent<Axis>().SetMean(averageValue);
+
+                                            //to show the mean value on the axis
                                             HandleDebugText(averageValue.ToString().Substring(0, 6));        //--debug mean
                                         }
                                         catch
@@ -402,7 +403,13 @@ namespace RadialMenu
                                 {
                                     double[] quartile = CalcPercent(dataList);
 
-                                    HandleDebugText(quartile.ToString().Substring(0, 6));                    //--debug quartile 
+                                    string toshow = "";
+                                    foreach (double val in quartile)
+                                    {
+                                        toshow += val.ToString() + " , ";
+                                    }
+
+                                    HandleDebugText(toshow);                    //--debug quartile 
                                 }
                             }
                             break;

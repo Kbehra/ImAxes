@@ -9,7 +9,8 @@ using UnityEngine.Events;
 using System.Linq;
 using System.IO;
 
-public class Axis : MonoBehaviour, Grabbable {
+public class Axis : MonoBehaviour, Grabbable
+{
 
     [SerializeField] TextMeshPro label;
     [SerializeField] TextMeshPro minimumValueDimensionLabel;
@@ -55,11 +56,13 @@ public class Axis : MonoBehaviour, Grabbable {
 
     public float MinNormaliser;
     public float MaxNormaliser;
-    
     /// <summary>
     /// Mean of the data of the axis, at the beginning the value is set to 1e37 to allows to bypass the default double value
     /// </summary>
     private double dataMean = 1e37;    
+
+    // allows to bypass the default double value
+    private double dataMean = 1e37;
 
     public bool isDirty;
 
@@ -75,10 +78,10 @@ public class Axis : MonoBehaviour, Grabbable {
     public NormalizeEvent OnNormalized = new NormalizeEvent();
 
     //ticker and file path (etc) for logging activity
-   
+
     SteamVR_TrackedObject trackedObject;
     List<Vector3> tracking = new List<Vector3>();
-    
+
     Vector2 AttributeRange;
 
     float ticksScaleFactor = 1.0f;
@@ -105,7 +108,7 @@ public class Axis : MonoBehaviour, Grabbable {
     /// </summary>
     public int GetSourceIndex()
     {
-        return SourceIndex; 
+        return SourceIndex;
     }
 
     /// <summary>
@@ -124,7 +127,7 @@ public class Axis : MonoBehaviour, Grabbable {
 
         // Getting source data
         dataArray = srcData;
-        
+
         AttributeRange = srcData.DimensionsRange[axisId];
         label.text = srcData.Identifiers[idx];
         UpdateRangeText();
@@ -241,7 +244,7 @@ public class Axis : MonoBehaviour, Grabbable {
         foreach (var item in colliders)
         {
             item.gameObject.layer = 2;
-        }       
+        }
 
     }
 
@@ -266,7 +269,7 @@ public class Axis : MonoBehaviour, Grabbable {
                 clone.GetComponent<Axis>().ReturnToOrigin();
 
                 SceneManager.Instance.AddAxis(clone.GetComponent<Axis>());
-                
+
                 foreach (var obj in GameObject.FindObjectsOfType<WandController>())
                 {
                     if (obj.IsDragging())
@@ -274,7 +277,7 @@ public class Axis : MonoBehaviour, Grabbable {
                 }
             }
         }
-        
+
     }
 
     public void LateUpdate()
@@ -340,95 +343,74 @@ public class Axis : MonoBehaviour, Grabbable {
         if (dataMean == 1e37)
         {
             dataMean = val;
-            Debug.Log(val);
-
+    
             List<Visualization> lv = correspondingVisualizations();
 
             // find the nearest value to use
             int idx = FindNearestDataIndex(axisId);
-            Debug.Log(idx);
+
             float normalisedYPosition = dataArray.DataArray[idx, axisId];
-            Debug.Log(normalisedYPosition);
+
 
             foreach (Visualization visu in lv)
             {
                 switch (visu.viewType)
                 {
                     case Visualization.ViewType.Histogram:
+                        //TODO
                         //meanObject.SetMode("line");
                         break;
 
                     case Visualization.ViewType.Scatterplot2D:
                         Debug.Log("SCATTERPLOT2D");
+                      // TODO
+                        // mean object line 
                         break;
 
                     case Visualization.ViewType.Scatterplot3D:
-                        Debug.Log("SCATTERPLOT3D"); 
-                        break; 
+                        Debug.Log("SCATTERPLOT3D");
+                        // TODO 
+                        // mean object plane
+                        break;
 
                 }
             }
-
-
-          
-
-        
-          
-        
-
-
-            //TODO : test if the method of calculation of the position of the mean its good or not
-            //float normalisedYPosition = Mathf.Clamp((float)dataMean, -0.505f, 0.505f);
-
             //We don't change the x and z position we just want to moove on y 
             meanObject.transform.localPosition = new Vector3(meanObject.transform.localPosition.x, meanObject.transform.localPosition.y + normalisedYPosition, meanObject.transform.localPosition.z);
 
             // Unhide the mean object to see it on the axis
             meanObject.SetActive(true);
-            Debug.Log("ok");
         }
         // else, we already have a mean 
     }
-
-<<<<<<< HEAD
-   
 
     public int FindNearestDataIndex(int dim)
     {
         float nearest = 1000000000.0f;
 
         List<List<float>> csv = dataArray.getOriginalValues();
-        float value = csv[0][dim]; 
+
+        float value = csv[0][dim];
         int pos = 0;
 
- 
-        Debug.Log("COUNT");
-        Debug.Log(csv.Count()); 
         for (int i = 1; i < csv.Count(); i++)
         {
             value = csv[pos][dim]; 
+
             if (Mathf.Abs(csv[i][dim] - value) < nearest)
             {
                 nearest = Mathf.Abs(csv[i][dim] - value);
                 pos = i;
             }
         }
-        
-        Debug.Log("fin");
-        Debug.Log(pos);
-        Debug.Log(nearest); 
-        return pos; 
-
+        return pos;
     }
 
 
-
-=======
     /// <summary>
     /// returns the value of the mean (double)
     /// </summary>
     /// <returns></returns>
->>>>>>> add comments for documentation Doxygen
     public double GetMean()
     {
         return dataMean;
@@ -505,7 +487,8 @@ public class Axis : MonoBehaviour, Grabbable {
         return Vector3.Dot(Up, axis.Up) > -0.2f && Vector3.Dot(Up, axis.Up) < 0.2f;
     }
 
-    public bool IsParallel(Axis axis) {
+    public bool IsParallel(Axis axis)
+    {
         return Vector3.Dot(Up, axis.Up) > 0.5f;
     }
 
@@ -659,7 +642,7 @@ public class Axis : MonoBehaviour, Grabbable {
 
                     vaxis.AnimateTo(vaxis.transform.position, q1);
                     haxis.AnimateTo(hpos, q2);
-                    daxis.AnimateTo(dpos, q3);                    
+                    daxis.AnimateTo(dpos, q3);
                 }
             }
         } // end for each 
@@ -724,7 +707,7 @@ public class Axis : MonoBehaviour, Grabbable {
 
     public void OnApplicationQuit()
     {
-        
+
     }
 
     public void Ghost(Axis sourceAxis)
@@ -759,7 +742,7 @@ public class Axis : MonoBehaviour, Grabbable {
     public void AnimateTo(Vector3 pos, Quaternion rot)
     {
         transform.DORotateQuaternion(rot, 0.4f).SetEase(Ease.OutBack);
-        transform.DOMove(pos, 0.4f).SetEase(Ease.OutBack);        
+        transform.DOMove(pos, 0.4f).SetEase(Ease.OutBack);
     }
 
 }
