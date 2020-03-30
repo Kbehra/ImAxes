@@ -59,9 +59,6 @@ public class Axis : MonoBehaviour, Grabbable
     /// <summary>
     /// Mean of the data of the axis, at the beginning the value is set to 1e37 to allows to bypass the default double value
     /// </summary>
-    private double dataMean = 1e37;    
-
-    // allows to bypass the default double value
     private double dataMean = 1e37;
 
     public bool isDirty;

@@ -13,14 +13,12 @@ Here is a video demo of ImAxes:
  width="240" height="180" border="10" /></a>
 
 ## Installation instructions
-ImAxes comes as a Unity project. You only need to download the latest [Unity 5.6](https://unity3d.com/get-unity/download/archive)
-
-** << Udpate >> : Now ImAxes works with Unity 2018!! check it out: https://github.com/MaximeCordeil/ImAxes/tree/ImAxes2018 big thanks to our student Benjamin Lee for this **
+ImAxes comes as a Unity project. You only need to download Unity [2019.2.8f1](https://unity3d.com/fr/unity/whats-new/2019.2.8) 
 
 ## Hardware and compatibility
 ImAxes works on Windows PCs. You will need a solid *gaming* configuration, i.e. an Intel i7 processor and an Nvidia 10xx VR-ready graphics card.
 
-The HTC Vive and Microsoft-compatible MR devices, and the Oculus Rift CV1 with Oculus touch controllers are currently supported.
+~~The HTC Vive and Microsoft-compatible MR devices~~, and the Oculus Rift CV1 with Oculus touch controllers are currently supported.
 
 ## Launching ImAxes
 ImAxes allows you to load data with a CSV or a TSV file format. The CSV/TSV dataset file:
@@ -39,6 +37,7 @@ Each column corresponds to a dimension of the data. Once you have launched ImAxe
 The project contains two template scenes:
   * a ViveScene, to be used with the HTC Vive and Mixed-Reality compatible devices
   * an OculusTouchScene, to be used with the Oculus CV1 and Oculus Touch controllers
+  * an OculusRiftSScene, to be used with the Oculus CV1 or Oculus Rift S. A radialMenu implementation can be found on this scene. 
 
 Both scenes have a SceneManager Unity gameobject in the hierarchy. Click this object [1] and in the inspector window, you can drag and drop your CSV/TSV file into the *Source Data* field [2]. You can also create a *metadata* file for your dataset and drag and drop it into the *Metadata* field.
 
@@ -77,6 +76,21 @@ Visualisations are created by pulling out axes from the *axes shelf* and by asse
 
 Check the [video](https://www.youtube.com/watch?v=hxqJJ934Reg) to learn the interactions.
 
+
+
+### Using the "RadialMenu"
+
+To use the radialMenu , you must be in the "OculusRiftSAndRadialMenu" scene. The menu appears when you press the "trigger" on the left controler. 
+
+* Hold, one axe and select "the mean icon" on the radial menu to compute the mean of your values. 
+* Hold, one axe and select "the std icon (i.e. sigma icon)" on the radial menu to compute the standard deviation of your values. 
+* Hold, one axe and select "the histogram icon on the radial menu to compute quartiles of your values. Results must appear on the radial menu. 
+* You can take a shot of your visualization, by selecting the camera icon on the radial menu. Press the trigger on the right controler to take the shot. 
+
+You can resize your axes by selected there on the left hand and press both triggers. 
+
+Check the [video](https://www.youtube.com/watch?v=m9fvWrJjaMU&feature=youtu.be) to see results 
+
 ### Changing the visualisation styles
 Press the *Menu* button on the HTC vive controller (or you Mixed-realiy device) and you will see this menu popup.
 
@@ -85,7 +99,7 @@ Press the *Menu* button on the HTC vive controller (or you Mixed-realiy device) 
 You can change the color scheme:
   * bind a palette to a categorical dimension
   * bind a gradient color (change min/max colors) to a continuous variable
- 
+
 *[image menu]*
 
 You can change the visualisation style:
@@ -95,6 +109,7 @@ You can change the visualisation style:
 ## Roadmap
 This is a *beta version of ImAxes*, it means that it is not bug-free and does not contain all the data visualisation features for now.
 We plan to:
+
   * Add menu in the Oculus Touch scene
   * Make ImAxes work with Unity 2017.x
   * Make ImAxes collaborative (multi user)
